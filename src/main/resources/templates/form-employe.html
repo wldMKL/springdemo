@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${employe.matricule == 0 ? 'Nouvel Employé — RH' : 'Modifier Employé — RH'}">Gestion RH</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* ── Tokens ──────────────────────────────────────────── */
+        :root {
+            --bg:         #0f0f10;
+            --surface:    #18181b;
+            --surface-2:  #1f1f23;
+            --border:     rgba(255,255,255,.07);
+            --gold:       #c8a96e;
+            --gold-dim:   #9c7d4d;
+            --gold-ghost: rgba(200,169,110,.08);
+            --text:       #f0ede8;
+            --muted:      #7a7470;
+            --muted-2:    #4a4643;
+            --danger:     #e05f5f;
+            --success:    #5fb88a;
+            --radius:     14px;
+            --tr:         260ms cubic-bezier(.4,0,.2,1);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse 70% 50% at 20% 0%,   rgba(200,169,110,.07) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 90% 100%, rgba(200,169,110,.05) 0%, transparent 50%);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        /* ── Back link ───────────────────────────────────────── */
+        .back-link {
+            align-self: flex-start;
+            margin-left: calc((100% - 480px) / 2);
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .78rem;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 1.25rem;
+            transition: color var(--tr);
+        }
+
+        .back-link:hover { color: var(--gold); }
+
+        /* ── Card ────────────────────────────────────────────── */
+        .card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 32px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(200,169,110,.05);
+            animation: rise .55s cubic-bezier(.4,0,.2,1) both;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Card header ─────────────────────────────────────── */
+        .card-header {
+            position: relative;
+            background: #111012;
+            padding: 1.75rem 2rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 100% 120% at 50% 120%, rgba(200,169,110,.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .header-icon {
+            position: relative;
+            z-index: 1;
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            color: #111;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(200,169,110,.25);
+        }
+
+        .header-text { position: relative; z-index: 1; }
+
+        .header-text h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.45rem;
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.2;
+            letter-spacing: .02em;
+        }
+
+        .header-text p {
+            font-size: .78rem;
+            color: var(--muted);
+            margin-top: .2rem;
+        }
+
+        /* ── Progress indicator ──────────────────────────────── */
+        .progress-bar-wrap {
+            height: 2px;
+            background: var(--border);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--gold-dim), var(--gold));
+            transition: width .4s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* ── Card body ───────────────────────────────────────── */
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* ── Field ───────────────────────────────────────────── */
+        .field {
+            margin-bottom: 1.4rem;
+        }
+
+        .field label {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: .55rem;
+        }
+
+        .field label .required {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--gold-dim);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap .icon {
+            position: absolute;
+            left: .9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: .95rem;
+            pointer-events: none;
+            transition: color var(--tr);
+        }
+
+        .input-wrap input {
+            width: 100%;
+            background: rgba(255,255,255,.04);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: .78rem .9rem .78rem 2.4rem;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            transition: border-color var(--tr), background var(--tr), box-shadow var(--tr);
+        }
+
+        .input-wrap input::placeholder { color: var(--muted-2); }
+
+        .input-wrap input:focus {
+            border-color: var(--gold-dim);
+            background: rgba(255,255,255,.06);
+            box-shadow: 0 0 0 3px rgba(200,169,110,.08);
+        }
+
+        /* Style spécifique pour le mode Read-Only (Modification) */
+        .input-wrap input:read-only {
+            background: rgba(0,0,0,.2);
+            border-color: rgba(255,255,255,.03);
+            color: var(--muted);
+            cursor: not-allowed;
+        }
+        .input-wrap input:read-only:focus {
+            box-shadow: none;
+            border-color: var(--danger); /* Petit feedback visuel si on essaie de cliquer */
+        }
+
+        .input-wrap input:focus ~ .icon { color: var(--gold); }
+        .input-wrap:focus-within .icon  { color: var(--gold); }
+
+        .field-hint {
+            margin-top: .45rem;
+            font-size: .74rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+        }
+
+        /* ── Divider ─────────────────────────────────────────── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.75rem 0;
+        }
+
+        /* ── Actions ─────────────────────────────────────────── */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: .65rem;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: .85rem;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            border: none;
+            border-radius: 9px;
+            color: #111;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem;
+            font-weight: 500;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            position: relative;
+            overflow: hidden;
+            transition: opacity var(--tr), transform var(--tr), box-shadow var(--tr);
+        }
+
+        .btn-save::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,.14), transparent);
+            opacity: 0;
+            transition: opacity var(--tr);
+        }
+
+        .btn-save:hover {
+            opacity: .92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(200,169,110,.3);
+        }
+
+        .btn-save:hover::after { opacity: 1; }
+        .btn-save:active       { transform: none; box-shadow: none; }
+
+        .btn-cancel {
+            width: 100%;
+            padding: .78rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            text-decoration: none;
+            transition: border-color var(--tr), color var(--tr), background var(--tr);
+        }
+
+        .btn-cancel:hover {
+            border-color: rgba(200,169,110,.3);
+            color: var(--gold);
+            background: var(--gold-ghost);
+        }
+
+        /* ── Footer ──────────────────────────────────────────── */
+        .card-footer {
+            padding: .9rem 2rem;
+            background: var(--surface-2);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: .72rem;
+            color: var(--muted-2);
+        }
+
+        .card-footer span { color: rgba(200,169,110,.5); }
+
+        /* ── Responsive ──────────────────────────────────────── */
+        @media (max-width: 540px) {
+            .back-link { margin-left: 0; }
+            .card-body  { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <a th:href="@{/index}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Retour à la liste
+    </a>
+
+    <div class="card">
+
+        <div class="card-header">
+            <div class="header-icon">
+                <i class="bi" th:classappend="${employe.matricule == 0 ? 'bi-person-plus' : 'bi-pencil'}"></i>
+            </div>
+            <div class="header-text">
+                <h2>
+                    <span th:text="${employe.matricule == 0 ? 'Nouvel' : 'Modifier'}">Nouvel</span> 
+                    <span style="color:var(--gold)">Employé</span>
+                </h2>
+                <p th:text="${employe.matricule == 0 ? 'Renseignez les informations du collaborateur.' : 'Mise à jour des données existantes.'}"></p>
+            </div>
+        </div>
+
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/save}" th:object="${employe}" method="post" id="employeForm" novalidate>
+
+                <div th:if="${errorMessage}" class="alert alert-danger" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 1rem;">
+                    <i class="bi bi-exclamation-triangle"></i> <span th:text="${errorMessage}"></span>
+                </div>
+
+                <div class="field">
+                    <label for="matricule">
+                        <span class="required"></span>
+                        Matricule
+                    </label>
+                    <div class="input-wrap">
+                        <i class="bi bi-hash icon"></i>
+                        <input
+                            type="number"
+                            id="matricule"
+                            th:field="*{matricule}"
+                            placeholder="ex : 1001"
+                            min="1"
+                            required
+                            th:readonly="${employe.matricule != 0}">
+                    </div>
+                    <p class="field-hint" th:if="${employe.matricule == 0}">
+                        <i class="bi bi-info-circle"></i>
+                        Le matricule doit être unique et supérieur à 0.
+                    </p>
+                    <p class="field-hint" th:if="${employe.matricule != 0}" style="color: var(--muted-2)">
+                        <i class="bi bi-lock-fill"></i>
+                        Le matricule ne peut pas être modifié.
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label for="nom">
+                        <span class="required"></span>
+                        Nom complet
+                    </label>
+                    <div class="input-wrap">
+                        <i class="bi bi-person icon"></i>
+                        <input
+                            type="text"
+                            id="nom"
+                            th:field="*{nom}"
+                            placeholder="ex : Jean Dupont"
+                            minlength="2"
+                            required>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-floppy"></i>
+                        <span th:text="${employe.matricule == 0 ? 'Enregistrer l\'employé' : 'Mettre à jour'}">Enregistrer</span>
+                    </button>
+                    <a th:href="@{/index}" class="btn-cancel">
+                        <i class="bi bi-x-lg"></i>
+                        Annuler
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <span>Espace RH</span> &nbsp;·&nbsp; Spring Boot Demo &copy; 2026
+        </div>
+    </div>
+
+    <script>
+        // ── Progress bar script ───────────────
+        const fields   = document.querySelectorAll('#employeForm input[required]');
+        const bar      = document.getElementById('progressBar');
+
+        function updateProgress() {
+            // On compte les champs remplis
+            const filled = [...fields].filter(f => f.value.trim() !== '').length;
+            // Calcul du pourcentage
+            bar.style.width = (filled / fields.length * 100) + '%';
+        }
+
+        fields.forEach(f => f.addEventListener('input', updateProgress));
+        // Appel initial pour que la barre se remplisse si on est en mode "Edit" (champs déjà remplis)
+        updateProgress();
+    </script>
+
+</body>
+</html>
