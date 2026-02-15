@@ -47,7 +47,6 @@
             padding: 2rem 1rem;
         }
 
-        /* ── Back link ──────────────────────────────────────── */
         .back-link {
             width: 100%;
             max-width: 500px;
@@ -62,7 +61,6 @@
         }
         .back-link:hover { color: var(--gold); }
 
-        /* ── Card ───────────────────────────────────────────── */
         .card {
             width: 100%;
             max-width: 500px;
@@ -73,7 +71,6 @@
             box-shadow: 0 32px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(200,169,110,.05);
         }
 
-        /* ── Card header ────────────────────────────────────── */
         .card-header {
             position: relative;
             background: #111012;
@@ -116,7 +113,6 @@
 
         .header-text p { font-size: .78rem; color: var(--muted); margin-top: .2rem; }
 
-        /* ── Employé badge (nom affiché en haut) ────────────── */
         .employe-badge {
             margin: 1.5rem 2rem 0;
             padding: .9rem 1.1rem;
@@ -158,7 +154,6 @@
             color: var(--gold); letter-spacing: .04em;
         }
 
-        /* ── Card body ──────────────────────────────────────── */
         .card-body { padding: 1.5rem 2rem 2rem; }
 
         .section-label {
@@ -169,7 +164,6 @@
             border-bottom: 1px solid var(--border);
         }
 
-        /* ── Field ──────────────────────────────────────────── */
         .field { margin-bottom: 1.3rem; }
 
         .field label {
@@ -215,7 +209,6 @@
 
         .input-wrap:focus-within .icon { color: var(--warning); }
 
-        /* champ matricule en lecture seule */
         .input-wrap input[readonly] {
             opacity: .55;
             cursor: not-allowed;
@@ -227,10 +220,8 @@
             display: flex; align-items: center; gap: .35rem;
         }
 
-        /* ── Divider ────────────────────────────────────────── */
         .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
 
-        /* ── Warning notice ─────────────────────────────────── */
         .notice {
             display: flex; align-items: flex-start; gap: .65rem;
             padding: .8rem 1rem;
@@ -244,7 +235,6 @@
 
         .notice i { flex-shrink: 0; margin-top: .1rem; }
 
-        /* ── Actions ────────────────────────────────────────── */
         .actions { display: flex; flex-direction: column; gap: .65rem; }
 
         .btn-save {
@@ -279,7 +269,6 @@
             color: #e07070; background: rgba(224,95,95,.06);
         }
 
-        /* ── Card footer ────────────────────────────────────── */
         .card-footer {
             padding: .85rem 2rem;
             background: var(--surface-2);
@@ -289,7 +278,6 @@
         }
         .card-footer span { color: rgba(200,169,110,.45); }
 
-        /* ── Responsive ─────────────────────────────────────── */
         @media (max-width: 540px) {
             .card-body { padding: 1.25rem 1.5rem 1.5rem; }
             .employe-badge { margin: 1.25rem 1.5rem 0; }
@@ -305,7 +293,6 @@
 
     <div class="card">
 
-        <!-- ── Header ─────────────────────────────────────── -->
         <div class="card-header">
             <div class="header-icon">
                 <i class="bi bi-pencil-square"></i>
@@ -316,9 +303,12 @@
             </div>
         </div>
 
-        <!-- ── Employé badge ──────────────────────────────── -->
         <div class="employe-badge">
-            <div class="avatar" th:text="${#strings.substring(employe.nom, 0, 1)}">?</div>
+            <div class="avatar">
+                <span th:if="${employe.nom != null and !employe.nom.isEmpty()}" 
+                      th:text="${employe.nom.substring(0,1)}">?</span>
+                <span th:unless="${employe.nom != null and !employe.nom.isEmpty()}">?</span>
+            </div>
             <div class="info">
                 <p>Modification en cours</p>
                 <strong th:text="${employe.nom}">Nom complet</strong>
@@ -326,15 +316,13 @@
             <span class="matricule-chip" th:text="'#' + ${employe.matricule}">#0000</span>
         </div>
 
-        <!-- ── Body ───────────────────────────────────────── -->
         <div class="card-body">
 
             <p class="section-label">Informations à modifier</p>
 
             <form th:action="@{/update}" th:object="${employe}" method="post" id="editForm">
 
-                <!-- Champ caché pour l'id (nécessaire pour la mise à jour) -->
-                <input type="hidden" th:field="*{id}">
+                <!-- ✅ CORRECTION : Pas de champ caché "id", on utilise directement matricule -->
 
                 <!-- Matricule (lecture seule — identifiant immuable) -->
                 <div class="field">
@@ -371,13 +359,11 @@
 
                 <div class="divider"></div>
 
-                <!-- Avertissement -->
                 <div class="notice">
                     <i class="bi bi-info-circle"></i>
                     <span>Les modifications seront enregistrées immédiatement et visibles par tous les utilisateurs connectés.</span>
                 </div>
 
-                <!-- Actions -->
                 <div class="actions">
                     <button type="submit" class="btn-save">
                         <i class="bi bi-floppy"></i>

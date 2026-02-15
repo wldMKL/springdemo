@@ -3,397 +3,114 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Employés — Espace RH</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Gestion des Employés</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
     <style>
-        :root {
-            --bg:          #0f0f10;
-            --surface:     #18181b;
-            --surface-2:   #1f1f23;
-            --border:      rgba(255,255,255,.07);
-            --border-2:    rgba(255,255,255,.04);
-            --gold:        #c8a96e;
-            --gold-dim:    #9c7d4d;
-            --gold-ghost:  rgba(200,169,110,.08);
-            --text:        #f0ede8;
-            --muted:       #7a7470;
-            --muted-2:     #4a4643;
-            --danger:      #e05f5f;
-            --success:     #5fb88a;
-            --info:        #6aafda;
-            --admin-badge: rgba(224,95,95,.15);
-            --emp-badge:   rgba(106,175,218,.15);
-            --radius:      12px;
-            --tr:          260ms cubic-bezier(.4,0,.2,1);
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
-            background-color: var(--bg);
-            background-image:
-                radial-gradient(ellipse 70% 50% at 80% -10%, rgba(200,169,110,.07) 0%, transparent 55%),
-                radial-gradient(ellipse 50% 40% at 5% 100%,  rgba(200,169,110,.04) 0%, transparent 50%);
-            font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
-            color: var(--text);
+            background: #0f0f10;
+            color: #f0ede8;
+            font-family: 'DM Sans', Arial, sans-serif;
         }
-
-        /* ── Topbar ──────────────────────────────────────────── */
         .topbar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(15,15,16,.88);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 2rem; height: 60px;
-            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(15,15,16,.9);
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-
-        .topbar-brand {
-            display: flex; align-items: center; gap: .75rem;
-            text-decoration: none;
-        }
-
-        .topbar-brand .monogram {
+        .topbar-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: #f0ede8; }
+        .monogram {
             width: 34px; height: 34px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            background: linear-gradient(135deg, #c8a96e, #9c7d4d);
             border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1rem; font-weight: 600; color: #111;
+            font-weight: 600; color: #111;
         }
-
-        .topbar-brand span {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.2rem; font-weight: 400;
-            color: var(--text); letter-spacing: .03em;
-        }
-
-        .topbar-right { display: flex; align-items: center; gap: 1.25rem; }
-
-        .user-info {
-            display: flex; align-items: center; gap: .55rem;
-            font-size: .82rem; color: var(--muted);
-        }
-        .user-info strong { color: var(--text); font-weight: 500; }
-
-        .badge-role {
-            font-size: .68rem; font-weight: 500;
-            letter-spacing: .06em; text-transform: uppercase;
-            padding: .2em .6em; border-radius: 30px;
-        }
-        .badge-admin { background: var(--admin-badge); color: #e07070; border: 1px solid rgba(224,95,95,.2); }
-        .badge-emp   { background: var(--emp-badge);   color: #7ec5e8; border: 1px solid rgba(106,175,218,.2); }
-
+        .topbar-right { display: flex; align-items: center; gap: 1rem; }
+        .user-info { font-size: .85rem; color: #7a7470; }
+        .user-info strong { color: #f0ede8; margin: 0 .5rem; }
+        .badge { display: inline-block; font-size: .7rem; padding: .2em .6em; border-radius: 20px; text-transform: uppercase; }
+        .badge-admin { background: rgba(224,95,95,.15); color: #e07070; border: 1px solid rgba(224,95,95,.2); }
+        .badge-emp { background: rgba(106,175,218,.15); color: #7ec5e8; border: 1px solid rgba(106,175,218,.2); }
         .btn-logout {
-            display: flex; align-items: center; gap: .4rem;
-            padding: .42rem .9rem;
+            padding: .5rem 1rem;
             background: transparent;
-            border: 1px solid var(--border); border-radius: 8px;
-            color: var(--muted);
-            font-family: 'DM Sans', Arial, sans-serif; font-size: .8rem;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 8px;
+            color: #7a7470;
+            font-size: .8rem;
             cursor: pointer;
-            transition: border-color var(--tr), color var(--tr), background var(--tr);
         }
-        .btn-logout:hover { border-color: rgba(224,95,95,.4); color: #e07070; background: rgba(224,95,95,.06); }
-
-        /* ── Flash messages ──────────────────────────────────── */
-        .flash-zone {
-            max-width: 1040px;
-            margin: 1.25rem auto 0;
-            padding: 0 1.5rem;
-        }
-
-        .flash {
-            display: flex; align-items: center; gap: .7rem;
-            padding: .85rem 1.1rem;
-            border-radius: 10px;
-            font-size: .84rem; line-height: 1.4;
-            animation: slideDown .3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .flash.success {
-            background: rgba(95,184,138,.1);
-            border: 1px solid rgba(95,184,138,.25);
-            color: #7ed4a8;
-        }
-        .flash.error {
-            background: rgba(224,95,95,.1);
-            border: 1px solid rgba(224,95,95,.25);
-            color: #e07070;
-        }
-        .flash i { font-size: 1rem; flex-shrink: 0; }
-
-        .flash-close {
-            margin-left: auto; background: none; border: none;
-            color: inherit; cursor: pointer; opacity: .6;
-            font-size: .85rem; padding: 0;
-            transition: opacity var(--tr);
-        }
-        .flash-close:hover { opacity: 1; }
-
-        /* ── Page ────────────────────────────────────────────── */
-        .page {
-            max-width: 1040px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 4rem;
-        }
-
-        .page-header {
-            display: flex; align-items: flex-end; justify-content: space-between;
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 2rem; font-weight: 300;
-            color: var(--text); letter-spacing: .02em; line-height: 1.1;
-        }
-        .page-header h1 span { color: var(--gold); }
-        .page-header p { font-size: .8rem; color: var(--muted); margin-top: .3rem; }
-
+        .btn-logout:hover { border-color: rgba(224,95,95,.4); color: #e07070; }
+        .flash { padding: .85rem 1rem; border-radius: 10px; margin: 1rem auto; max-width: 1040px; display: flex; align-items: center; gap: .7rem; }
+        .flash.success { background: rgba(95,184,138,.1); border: 1px solid rgba(95,184,138,.25); color: #7ed4a8; }
+        .flash.error { background: rgba(224,95,95,.1); border: 1px solid rgba(224,95,95,.25); color: #e07070; }
+        .page { max-width: 1040px; margin: 0 auto; padding: 2rem 1.5rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2rem; font-weight: 300; color: #f0ede8; }
+        .page-header h1 span { color: #c8a96e; }
         .btn-new {
             display: inline-flex; align-items: center; gap: .5rem;
             padding: .65rem 1.25rem;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+            background: linear-gradient(135deg, #c8a96e, #9c7d4d);
             border: none; border-radius: 9px; color: #111;
-            font-family: 'DM Sans', Arial, sans-serif;
             font-size: .82rem; font-weight: 500;
-            letter-spacing: .05em; text-transform: uppercase;
-            text-decoration: none; cursor: pointer; flex-shrink: 0;
-            transition: opacity var(--tr), transform var(--tr), box-shadow var(--tr);
+            text-decoration: none; cursor: pointer;
         }
-        .btn-new:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(200,169,110,.3); color: #111; }
-        .btn-new:active { transform: none; box-shadow: none; }
-
-        /* ── Stats strip ─────────────────────────────────────── */
-        .stats-strip { display: flex; gap: 1rem; margin-bottom: 1.75rem; }
-
-        .stat-card {
-            flex: 1; background: var(--surface);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 1rem 1.25rem;
-            display: flex; align-items: center; gap: .9rem;
+        .btn-new:hover { opacity: .9; }
+        .table-card { background: #18181b; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: .9rem 1.25rem; font-size: .7rem; font-weight: 500;
+            text-transform: uppercase; color: #7a7470; background: #1f1f23;
+            border-bottom: 1px solid rgba(255,255,255,.07); text-align: left;
         }
-
-        .stat-icon {
-            width: 38px; height: 38px; border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; flex-shrink: 0;
-        }
-        .stat-icon.gold { background: var(--gold-ghost); color: var(--gold); }
-        .stat-icon.red  { background: rgba(224,95,95,.1); color: #e07070; }
-        .stat-icon.blue { background: rgba(106,175,218,.1); color: #7ec5e8; }
-
-        .stat-info p      { font-size: .72rem; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
-        .stat-info strong { font-size: 1.3rem; font-weight: 500; color: var(--text); line-height: 1.2; display: block; }
-
-        /* ── Toolbar ─────────────────────────────────────────── */
-        .toolbar { display: flex; gap: .75rem; margin-bottom: 1rem; }
-
-        .search-wrap { position: relative; flex: 1; }
-        .search-wrap i {
-            position: absolute; left: .9rem; top: 50%;
-            transform: translateY(-50%);
-            color: var(--muted); font-size: .95rem; pointer-events: none;
-        }
-        .search-wrap input {
-            width: 100%; background: var(--surface);
-            border: 1px solid var(--border); border-radius: 9px;
-            padding: .65rem .9rem .65rem 2.4rem;
-            color: var(--text);
-            font-family: 'DM Sans', Arial, sans-serif; font-size: .85rem;
-            outline: none;
-            transition: border-color var(--tr), box-shadow var(--tr);
-        }
-        .search-wrap input::placeholder { color: var(--muted-2); }
-        .search-wrap input:focus { border-color: var(--gold-dim); box-shadow: 0 0 0 3px rgba(200,169,110,.07); }
-
-        /* ── Table card ──────────────────────────────────────── */
-        .table-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .table-card table { width: 100%; border-collapse: collapse; }
-
-        .table-card thead tr { border-bottom: 1px solid var(--border); }
-        .table-card thead th {
-            padding: .9rem 1.25rem;
-            font-size: .7rem; font-weight: 500;
-            letter-spacing: .1em; text-transform: uppercase;
-            color: var(--muted); background: var(--surface-2);
-            white-space: nowrap;
-        }
-
-        .table-card tbody tr {
-            border-bottom: 1px solid var(--border-2);
-            transition: background var(--tr);
-        }
-        .table-card tbody tr:last-child { border-bottom: none; }
-        .table-card tbody tr:hover { background: rgba(255,255,255,.025); }
-        .table-card tbody td { padding: .85rem 1.25rem; font-size: .88rem; vertical-align: middle; }
-
+        tbody td { padding: .85rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,.04); }
+        tbody tr:hover { background: rgba(255,255,255,.025); }
         .matricule-chip {
-            display: inline-flex; align-items: center;
-            background: var(--gold-ghost);
-            border: 1px solid rgba(200,169,110,.15);
-            border-radius: 6px; padding: .2em .65em;
-            font-size: .78rem; font-weight: 500;
-            color: var(--gold); letter-spacing: .04em;
+            display: inline-block; background: rgba(200,169,110,.08);
+            border: 1px solid rgba(200,169,110,.15); border-radius: 6px;
+            padding: .2em .65em; font-size: .78rem; color: #c8a96e;
         }
-
+        .employee-cell { display: flex; align-items: center; gap: .75rem; }
         .avatar {
             width: 34px; height: 34px; border-radius: 50%;
             background: linear-gradient(135deg, #2a2a30, #3a3a42);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,.07);
             display: flex; align-items: center; justify-content: center;
-            font-size: .8rem; font-weight: 500; color: var(--gold);
-            flex-shrink: 0;
-            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: .8rem; color: #c8a96e;
         }
-
-        .employee-cell { display: flex; align-items: center; gap: .75rem; }
-        .employee-cell .name { font-weight: 400; color: var(--text); }
-
-        .actions-cell {
-            display: flex; align-items: center;
-            justify-content: flex-end; gap: .4rem;
-        }
-
+        .actions-cell { display: flex; gap: .4rem; justify-content: flex-end; }
         .btn-icon {
             width: 32px; height: 32px; border-radius: 8px;
-            border: 1px solid var(--border);
-            background: transparent;
+            border: 1px solid rgba(255,255,255,.07); background: transparent;
             display: flex; align-items: center; justify-content: center;
-            font-size: .85rem; cursor: pointer;
-            color: var(--muted); text-decoration: none;
-            transition: border-color var(--tr), color var(--tr), background var(--tr);
+            color: #7a7470; cursor: pointer; text-decoration: none;
         }
-        .btn-icon.view:hover { border-color: rgba(106,175,218,.4); color: #7ec5e8; background: rgba(106,175,218,.07); }
-        .btn-icon.edit:hover { border-color: rgba(200,169,110,.4); color: var(--gold); background: var(--gold-ghost); }
-        .btn-icon.del:hover  { border-color: rgba(224,95,95,.4);   color: #e07070;   background: rgba(224,95,95,.07); }
-
-        .empty-state { text-align: center; padding: 3.5rem 1rem; }
-        .empty-state i { font-size: 2rem; color: var(--muted-2); display: block; margin-bottom: .75rem; }
-        .empty-state p { font-size: .85rem; color: var(--muted); }
-
-        .table-footer {
-            padding: .75rem 1.25rem;
-            border-top: 1px solid var(--border);
-            background: var(--surface-2);
-            display: flex; align-items: center; justify-content: space-between;
-            font-size: .75rem; color: var(--muted);
-        }
-        .table-footer span { color: var(--gold); font-weight: 500; }
-
-        /* ── Modale de confirmation suppression ──────────────── */
-        .modal-overlay {
-            position: fixed; inset: 0; z-index: 200;
-            background: rgba(0,0,0,.7);
-            backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem;
-            opacity: 0; pointer-events: none;
-            transition: opacity .25s ease;
-        }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-        .modal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 2rem;
-            width: 100%; max-width: 400px;
-            box-shadow: 0 32px 64px rgba(0,0,0,.6);
-            transform: translateY(16px);
-            transition: transform .25s ease;
-        }
-        .modal-overlay.open .modal { transform: translateY(0); }
-
-        .modal-icon {
-            width: 48px; height: 48px; border-radius: 12px;
-            background: rgba(224,95,95,.12);
-            border: 1px solid rgba(224,95,95,.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.25rem; color: #e07070;
-            margin-bottom: 1.25rem;
-        }
-
-        .modal h3 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.3rem; font-weight: 400; color: var(--text);
-            margin-bottom: .5rem;
-        }
-
-        .modal p { font-size: .84rem; color: var(--muted); line-height: 1.6; }
-        .modal p strong { color: var(--text); }
-
-        .modal-actions { display: flex; gap: .65rem; margin-top: 1.75rem; }
-
-        .modal-actions a {
-            flex: 1; padding: .78rem;
-            border-radius: 9px; text-align: center;
-            font-family: 'DM Sans', Arial, sans-serif;
-            font-size: .84rem; font-weight: 500;
-            letter-spacing: .04em; text-decoration: none;
-            transition: opacity var(--tr), transform var(--tr);
-        }
-
-        .btn-modal-cancel {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
-        .btn-modal-cancel:hover { border-color: rgba(255,255,255,.15); color: var(--text); }
-
-        .btn-modal-confirm {
-            background: var(--danger);
-            border: 1px solid transparent;
-            color: #fff;
-        }
-        .btn-modal-confirm:hover { opacity: .88; transform: translateY(-1px); }
-
-        /* ── Responsive ──────────────────────────────────────── */
-        @media (max-width: 640px) {
-            .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .stats-strip { flex-wrap: wrap; }
-            .stat-card   { min-width: calc(50% - .5rem); }
-            .topbar      { padding: 0 1rem; }
-            .topbar-brand span { display: none; }
-            .user-info .label  { display: none; }
-        }
+        .btn-icon.edit:hover { border-color: rgba(200,169,110,.4); color: #c8a96e; background: rgba(200,169,110,.08); }
+        .btn-icon.del:hover { border-color: rgba(224,95,95,.4); color: #e07070; background: rgba(224,95,95,.07); }
+        .empty-state { text-align: center; padding: 3rem 1rem; color: #7a7470; }
+        .empty-state i { font-size: 2rem; margin-bottom: .75rem; }
     </style>
 </head>
 <body>
 
-<!-- ── Topbar ──────────────────────────────────────────── -->
 <nav class="topbar">
     <a class="topbar-brand" href="#">
         <div class="monogram">RH</div>
-        <span>Espace Ressources Humaines</span>
+        <span>Espace RH</span>
     </a>
     <div class="topbar-right">
         <div class="user-info">
             <i class="bi bi-person-circle"></i>
-            <span class="label">Connecté :</span>
-            <strong sec:authentication="name"></strong>
-            <span sec:authorize="hasRole('ADMIN')" class="badge-role badge-admin">Admin</span>
-            <span sec:authorize="hasRole('EMPLOYE')" class="badge-role badge-emp">Employé</span>
+            <strong sec:authentication="name">Utilisateur</strong>
+            <span sec:authorize="hasRole('ADMIN')" class="badge badge-admin">Admin</span>
+            <span sec:authorize="hasRole('EMPLOYE')" class="badge badge-emp">Employé</span>
         </div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-logout">
@@ -403,224 +120,97 @@
     </div>
 </nav>
 
-<!-- ── Messages flash (succès / erreur) ──────────────── -->
-<div class="flash-zone">
-    <div th:if="${successMessage}" class="flash success">
-        <i class="bi bi-check-circle-fill"></i>
-        <span th:text="${successMessage}"></span>
-        <button class="flash-close" onclick="this.parentElement.remove()">
-            <i class="bi bi-x-lg"></i>
-        </button>
-    </div>
-    <div th:if="${errorMessage}" class="flash error">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <span th:text="${errorMessage}"></span>
-        <button class="flash-close" onclick="this.parentElement.remove()">
-            <i class="bi bi-x-lg"></i>
-        </button>
-    </div>
+<div th:if="${successMessage}" class="flash success">
+    <i class="bi bi-check-circle-fill"></i>
+    <span th:text="${successMessage}"></span>
 </div>
 
-<!-- ── Page ───────────────────────────────────────────── -->
-<main class="page">
+<div th:if="${errorMessage}" class="flash error">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span th:text="${errorMessage}"></span>
+</div>
 
-    <!-- Header -->
+<main class="page">
     <div class="page-header">
         <div>
-            <h1>Liste des<br><span>Employés</span></h1>
-            <p>Gérez l'ensemble du personnel de l'organisation.</p>
+            <h1>Liste des <span>Employés</span></h1>
+            <p>Gérez l'ensemble du personnel</p>
         </div>
         <a th:href="@{/add}" sec:authorize="hasRole('ADMIN')" class="btn-new">
             <i class="bi bi-plus-lg"></i> Nouvel employé
         </a>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-strip">
-        <div class="stat-card">
-            <div class="stat-icon gold"><i class="bi bi-people"></i></div>
-            <div class="stat-info">
-                <p>Total employés</p>
-                <strong th:text="${#lists.size(listEmployes)}">—</strong>
-            </div>
-        </div>
-        <div class="stat-card" sec:authorize="hasRole('ADMIN')">
-            <div class="stat-icon red"><i class="bi bi-shield-fill"></i></div>
-            <div class="stat-info"><p>Votre rôle</p><strong>Administrateur</strong></div>
-        </div>
-        <div class="stat-card" sec:authorize="hasRole('EMPLOYE')">
-            <div class="stat-icon blue"><i class="bi bi-person-badge"></i></div>
-            <div class="stat-info"><p>Votre rôle</p><strong>Employé</strong></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon gold"><i class="bi bi-calendar3"></i></div>
-            <div class="stat-info"><p>Date</p><strong id="today-date">—</strong></div>
-        </div>
-    </div>
-
-    <!-- Toolbar -->
-    <div class="toolbar">
-        <div class="search-wrap">
-            <i class="bi bi-search"></i>
-            <input type="text" id="searchInput" placeholder="Rechercher un employé par nom ou matricule…">
-        </div>
-    </div>
-
-    <!-- Table -->
     <div class="table-card">
         <table>
             <thead>
                 <tr>
-                    <th style="width:140px">Matricule</th>
+                    <th>Matricule</th>
                     <th>Employé</th>
-                    <th style="width:130px; text-align:right;">Actions</th>
+                    <th style="text-align:right">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="e : ${listEmployes}" class="data-row">
-                    <td><span class="matricule-chip" th:text="${e.matricule}"></span></td>
+                <tr th:each="e : ${listEmployes}">
+                    <td>
+                        <span class="matricule-chip" th:text="${e.matricule}">0</span>
+                    </td>
                     <td>
                         <div class="employee-cell">
-                            <div class="avatar" th:text="${#strings.substring(e.nom,0,1)}"></div>
-                            <span class="name" th:text="${e.nom}"></span>
+                            <div class="avatar">
+                                <span th:if="${e.nom != null and !e.nom.isEmpty()}" 
+                                      th:text="${e.nom.substring(0,1)}">?</span>
+                                <span th:unless="${e.nom != null and !e.nom.isEmpty()}">?</span>
+                            </div>
+                            <span th:text="${e.nom}">Nom</span>
                         </div>
                     </td>
                     <td>
                         <div class="actions-cell">
-                            <!-- Voir (tous les connectés) -->
-                            <a th:href="@{/edit(id=${e.id})}"
-                               class="btn-icon view" title="Voir les détails">
-                                <i class="bi bi-eye"></i>
-                            </a>
-
-                            <!-- ✅ Modifier — ADMIN uniquement → redirige vers edit-employe -->
-                            <a th:href="@{/edit(id=${e.id})}"
-                               sec:authorize="hasRole('ADMIN')"
-                               class="btn-icon edit" title="Modifier">
+                            <a th:href="@{/edit(id=${e.matricule})}" 
+                               class="btn-icon edit" 
+                               title="Modifier" 
+                               sec:authorize="hasRole('ADMIN')">
                                 <i class="bi bi-pencil"></i>
                             </a>
-
-                            <!-- ✅ Supprimer — ADMIN uniquement → ouvre la modale -->
+                            
+                            <!-- ✅ CORRECTION : Utilisation de data-attributes au lieu de onclick avec String -->
                             <button type="button"
+                                    class="btn-icon del delete-btn" 
+                                    title="Supprimer"
                                     sec:authorize="hasRole('ADMIN')"
-                                    class="btn-icon del" title="Supprimer"
-                                    th:attr="
-                                        data-id=${e.id},
-                                        data-nom=${e.nom},
-                                        data-matricule=${e.matricule}"
-                                    onclick="openDeleteModal(this)">
+                                    th:attr="data-id=${e.matricule},data-nom=${e.nom}">
                                 <i class="bi bi-trash3"></i>
                             </button>
                         </div>
                     </td>
                 </tr>
-
-                <tr th:if="${#lists.isEmpty(listEmployes)}">
+                
+                <tr th:if="${listEmployes == null or listEmployes.isEmpty()}">
                     <td colspan="3">
                         <div class="empty-state">
                             <i class="bi bi-inbox"></i>
-                            <p>Aucun employé trouvé dans la base de données.</p>
+                            <p>Aucun employé trouvé</p>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-
-        <div id="no-results" style="display:none">
-            <div class="empty-state">
-                <i class="bi bi-search"></i>
-                <p>Aucun résultat pour cette recherche.</p>
-            </div>
-        </div>
-
-        <div class="table-footer">
-            <p>Total &nbsp;·&nbsp; <span th:text="${#lists.size(listEmployes)}"></span> employés</p>
-            <p id="filter-info" style="display:none"></p>
-        </div>
     </div>
-
 </main>
 
-<!-- ── Modale de confirmation suppression ─────────────── -->
-<div class="modal-overlay" id="deleteModal">
-    <div class="modal">
-        <div class="modal-icon"><i class="bi bi-trash3"></i></div>
-        <h3>Confirmer la suppression</h3>
-        <p>Vous êtes sur le point de supprimer l'employé<br>
-           <strong id="modal-nom">—</strong>
-           &nbsp;(matricule <strong id="modal-matricule">—</strong>).<br><br>
-           Cette action est <strong>irréversible</strong>.
-        </p>
-        <div class="modal-actions">
-            <a href="#" class="btn-modal-cancel" onclick="closeDeleteModal()">Annuler</a>
-            <a href="#" id="modal-confirm-link" class="btn-modal-confirm">
-                <i class="bi bi-trash3"></i> &nbsp;Supprimer
-            </a>
-        </div>
-    </div>
-</div>
-
 <script>
-    // ── Date ───────────────────────────────────────────────
-    document.getElementById('today-date').textContent =
-        new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' });
-
-    // ── Recherche ──────────────────────────────────────────
-    const input      = document.getElementById('searchInput');
-    const rows       = document.querySelectorAll('.data-row');
-    const noResults  = document.getElementById('no-results');
-    const filterInfo = document.getElementById('filter-info');
-
-    input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
-        let visible = 0;
-        rows.forEach(row => {
-            const match = !q || row.textContent.toLowerCase().includes(q);
-            row.style.display = match ? '' : 'none';
-            if (match) visible++;
-        });
-        noResults.style.display  = (visible === 0 && q) ? 'block' : 'none';
-        filterInfo.style.display = q ? 'inline' : 'none';
-        filterInfo.textContent   = `${visible} résultat${visible !== 1 ? 's' : ''} affiché${visible !== 1 ? 's' : ''}`;
+// ✅ Gestion de la suppression avec data-attributes
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.getAttribute('data-id');
+        const nom = this.getAttribute('data-nom');
+        
+        if (confirm('Voulez-vous vraiment supprimer l\'employé ' + nom + ' (matricule ' + id + ') ?')) {
+            window.location.href = '/delete?id=' + id;
+        }
     });
-
-    // ── Modale suppression ─────────────────────────────────
-    const modal = document.getElementById('deleteModal');
-
-    function openDeleteModal(btn) {
-        const id         = btn.dataset.id;
-        const nom        = btn.dataset.nom;
-        const matricule  = btn.dataset.matricule;
-
-        document.getElementById('modal-nom').textContent        = nom;
-        document.getElementById('modal-matricule').textContent  = matricule;
-        document.getElementById('modal-confirm-link').href      = '/delete?id=' + id;
-
-        modal.classList.add('open');
-    }
-
-    function closeDeleteModal() {
-        modal.classList.remove('open');
-    }
-
-    // Fermer en cliquant sur l'overlay
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeDeleteModal();
-    });
-
-    // Fermer avec Échap
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeDeleteModal();
-    });
-
-    // ── Auto-disparition des flash messages après 5s ───────
-    document.querySelectorAll('.flash').forEach(function(el) {
-        setTimeout(function() {
-            el.style.transition = 'opacity .4s';
-            el.style.opacity = '0';
-            setTimeout(function() { el.remove(); }, 400);
-        }, 5000);
-    });
+});
 </script>
 
 </body>
