@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails employé — RH</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root { --bg: #0f0f10; --surface: #18181b; --border: rgba(255,255,255,.07); --gold: #c8a96e; --text: #f0ede8; --muted: #7a7470; }
+        body { min-height: 100vh; background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem; }
+        h1 { font-size: 2rem; margin-bottom: .5rem; }
+        .info-grid { display: grid; grid-template-columns: 200px 1fr; gap: 1rem; margin-top: 1.5rem; }
+        .info-label { font-size: .85rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+        .info-value { font-size: 1rem; }
+        .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .7rem 1.2rem; border-radius: 9px; text-decoration: none; background: rgba(200,169,110,.12); color: var(--gold); border: 1px solid rgba(200,169,110,.2); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a th:href="@{/employers}" class="btn"><i class="bi bi-arrow-left"></i> Retour</a>
+    
+    <div class="card">
+        <h1 th:text="${employer.prenom + ' ' + employer.nom}">Nom complet</h1>
+        <p style="color: var(--muted);" th:text="${employer.fonction ?: 'Fonction non renseignée'}">Fonction</p>
+        
+        <div class="info-grid">
+            <div class="info-label">Matricule</div>
+            <div class="info-value" th:text="${employer.matricule}">-</div>
+            
+            <div class="info-label">Email</div>
+            <div class="info-value" th:text="${employer.email ?: 'Non renseigné'}">-</div>
+            
+            <div class="info-label">Téléphone</div>
+            <div class="info-value" th:text="${employer.telephone ?: 'Non renseigné'}">-</div>
+            
+            <div class="info-label">Département</div>
+            <div class="info-value" th:text="${employer.departement.nom}">-</div>
+            
+            <div class="info-label">Salaire</div>
+            <div class="info-value" th:text="${employer.salaire != null ? #numbers.formatDecimal(employer.salaire, 1, 2) + ' TND' : 'Non renseigné'}">-</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
