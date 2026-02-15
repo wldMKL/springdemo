@@ -1,6 +1,5 @@
 package edu.isetjb._dsi.envdev.springdemo.security;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
 
 @Configuration
 @EnableWebSecurity
@@ -44,15 +42,24 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                // ✅ CORRECTION : /edit, /update et /delete ajoutés — ADMIN uniquement
-                .requestMatchers("/add", "/save", "/edit", "/update", "/delete").hasRole("ADMIN")
+
+                // ✅ CORRECTION : Couvre toutes les URLs d'administration du nouveau système
+                .requestMatchers(
+                    "/add", "/save", "/edit", "/update", "/delete",
+                    "/departements/add", "/departements/save",
+                    "/departements/edit", "/departements/delete",
+                    "/employers/add", "/employers/save",
+                    "/employers/edit", "/employers/delete",
+                    "/entreprise/edit", "/entreprise/save"
+                ).hasRole("ADMIN")
+
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/index", true)
+                // ✅ CORRECTION : Redirection vers /dashboard (et non /index qui est l'ancien système)
+                .defaultSuccessUrl("/dashboard", true)
                 .failureUrl("/login?error")
                 .permitAll()
             )
@@ -63,9 +70,7 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .clearAuthentication(true)
                 .permitAll()
-            )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+            );
 
         return http.build();
     }
