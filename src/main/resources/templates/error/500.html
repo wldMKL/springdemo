@@ -2,24 +2,62 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Erreur — Espace RH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreur 500 — Espace RH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        body { margin: 0; padding: 0; background: #0f0f10; color: #f0ede8; font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; }
-        .error-container { max-width: 500px; }
-        h1 { font-size: 4rem; margin: 0; color: #e05f5f; }
-        h2 { font-size: 1.5rem; margin: 1rem 0; }
-        p { color: #7a7470; margin-bottom: 2rem; }
-        a { display: inline-block; padding: .8rem 1.5rem; background: #c8a96e; color: #111; text-decoration: none; border-radius: 8px; }
+        :root { --bg:#0f0f10; --surface:#18181b; --border:rgba(255,255,255,.07); --gold:#c8a96e; --text:#f0ede8; --muted:#7a7470; --danger:#e05f5f; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh; background: var(--bg); color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            display: flex; align-items: center; justify-content: center; padding: 2rem;
+            background-image: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(224,95,95,.05) 0%, transparent 60%);
+        }
+        .container { max-width: 480px; text-align: center; }
+        .error-code {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 8rem; font-weight: 300; line-height: 1;
+            color: var(--danger); opacity: .7;
+            text-shadow: 0 0 80px rgba(224,95,95,.3);
+            margin-bottom: 1rem;
+        }
+        .error-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; margin-bottom: .75rem; }
+        .error-msg { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
+        .error-detail {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 1rem; font-size: .78rem; color: var(--muted); text-align: left;
+            margin-bottom: 2rem; font-family: monospace; word-break: break-all;
+        }
+        .error-detail strong { display: block; color: #e07070; margin-bottom: .4rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-family: 'DM Sans', sans-serif; }
+        .actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+        .btn-home { display: inline-flex; align-items: center; gap: .4rem; padding: .75rem 1.5rem; background: linear-gradient(135deg, #c8a96e, #9c7d4d); border: none; border-radius: 9px; color: #111; font-size: .85rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: opacity .25s, transform .25s; }
+        .btn-home:hover { opacity: .9; transform: translateY(-1px); }
+        .btn-back { display: inline-flex; align-items: center; gap: .4rem; padding: .75rem 1.5rem; background: transparent; border: 1px solid var(--border); border-radius: 9px; color: var(--muted); font-size: .85rem; text-decoration: none; transition: border-color .25s, color .25s; }
+        .btn-back:hover { border-color: rgba(200,169,110,.3); color: var(--gold); }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="error-code">500</div>
+        <h1 class="error-title">Erreur interne du serveur</h1>
+        <p class="error-msg">Une erreur inattendue s'est produite. Notre équipe technique a été notifiée. Veuillez réessayer ou contacter l'administrateur.</p>
 
-<div class="error-container">
-    <h1>500</h1>
-    <h2>Erreur interne du serveur</h2>
-    <p>Une erreur inattendue s'est produite. Veuillez réessayer ou contacter l'administrateur.</p>
-    <a href="/dashboard">Retour au dashboard</a>
-</div>
+        <div th:if="${errorDetails}" class="error-detail" xmlns:th="http://www.thymeleaf.org">
+            <strong>Détails de l'erreur</strong>
+            <span th:text="${errorDetails}">—</span>
+        </div>
+        <div th:unless="${errorDetails}" class="error-detail" xmlns:th="http://www.thymeleaf.org">
+            <strong>Détails de l'erreur</strong>
+            <span>Aucune information disponible.</span>
+        </div>
 
+        <div class="actions">
+            <a href="/dashboard" class="btn-home"><i class="bi bi-house"></i> Tableau de bord</a>
+            <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i> Page précédente</a>
+        </div>
+    </div>
 </body>
 </html>

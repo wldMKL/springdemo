@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employés — Espace RH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root { --bg:#0f0f10;--surface:#18181b;--surface-2:#1f1f23;--border:rgba(255,255,255,.07);--gold:#c8a96e;--gold-dim:#9c7d4d;--gold-ghost:rgba(200,169,110,.08);--text:#f0ede8;--muted:#7a7470;--danger:#e05f5f;--success:#5fb88a;--radius:14px;--tr:260ms cubic-bezier(.4,0,.2,1); }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        body { min-height:100vh; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; }
+        .topbar { background:rgba(15,15,16,.95); border-bottom:1px solid var(--border); backdrop-filter:blur(12px); padding:0 2rem; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+        .topbar-brand { display:flex; align-items:center; gap:.75rem; text-decoration:none; color:var(--text); }
+        .monogram { width:34px; height:34px; background:linear-gradient(135deg,var(--gold),var(--gold-dim)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-weight:600; color:#111; }
+        .topbar-right { display:flex; align-items:center; gap:1rem; }
+        .user-info { font-size:.82rem; color:var(--muted); display:flex; align-items:center; gap:.4rem; }
+        .user-info strong { color:var(--text); }
+        .badge { font-size:.68rem; padding:.2em .6em; border-radius:20px; text-transform:uppercase; font-weight:500; }
+        .badge-admin { background:rgba(224,95,95,.15); color:#e07070; border:1px solid rgba(224,95,95,.2); }
+        .badge-emp { background:rgba(106,175,218,.15); color:#7ec5e8; border:1px solid rgba(106,175,218,.2); }
+        .btn-logout { display:inline-flex; align-items:center; gap:.4rem; padding:.45rem .9rem; background:transparent; border:1px solid var(--border); border-radius:8px; color:var(--muted); font-size:.78rem; cursor:pointer; transition:border-color var(--tr),color var(--tr); }
+        .btn-logout:hover { border-color:rgba(224,95,95,.4); color:#e07070; }
+        .flash { padding:.85rem 1rem; border-radius:10px; display:flex; align-items:center; gap:.7rem; font-size:.82rem; margin: 1rem 2rem; }
+        .flash.success { background:rgba(95,184,138,.1); border:1px solid rgba(95,184,138,.25); color:#7ed4a8; }
+        .flash.error   { background:rgba(224,95,95,.1);  border:1px solid rgba(224,95,95,.25);  color:#e07070; }
+        .page { max-width:1040px; margin:0 auto; padding:2rem 1.5rem; }
+        .page-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2rem; }
+        .page-header-left .breadcrumb { font-size:.75rem; color:var(--muted); margin-bottom:.4rem; }
+        .page-header-left .breadcrumb a { color:var(--gold); text-decoration:none; }
+        .page-header h1 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; }
+        .page-header h1 span { color:var(--gold); }
+        .btn-new { display:inline-flex; align-items:center; gap:.5rem; padding:.65rem 1.25rem; background:linear-gradient(135deg,var(--gold),var(--gold-dim)); border:none; border-radius:9px; color:#111; font-size:.82rem; font-weight:500; text-decoration:none; cursor:pointer; transition:opacity var(--tr),transform var(--tr); }
+        .btn-new:hover { opacity:.9; transform:translateY(-1px); }
+
+        /* Search bar */
+        .toolbar { display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem; }
+        .search-wrap { position:relative; flex:1; max-width:320px; }
+        .search-wrap i { position:absolute; left:.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.9rem; pointer-events:none; }
+        .search-wrap input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:.65rem .9rem .65rem 2.4rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.85rem; outline:none; transition:border-color var(--tr); }
+        .search-wrap input:focus { border-color:rgba(200,169,110,.3); }
+        .count-label { font-size:.78rem; color:var(--muted); margin-left:auto; }
+
+        .table-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+        table { width:100%; border-collapse:collapse; }
+        thead th { padding:.9rem 1.25rem; font-size:.7rem; font-weight:500; text-transform:uppercase; color:var(--muted); background:var(--surface-2); border-bottom:1px solid var(--border); text-align:left; letter-spacing:.06em; }
+        tbody td { padding:.85rem 1.25rem; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+        tbody tr:last-child td { border-bottom:none; }
+        tbody tr:hover { background:rgba(255,255,255,.025); }
+        .matricule-chip { display:inline-block; background:var(--gold-ghost); border:1px solid rgba(200,169,110,.15); border-radius:6px; padding:.2em .65em; font-size:.78rem; color:var(--gold); letter-spacing:.03em; }
+        .employee-cell { display:flex; align-items:center; gap:.75rem; }
+        .avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#2a2a30,#3a3a42); border:1px solid rgba(255,255,255,.07); display:flex; align-items:center; justify-content:center; font-size:.85rem; color:var(--gold); flex-shrink:0; }
+        .emp-name { font-size:.9rem; font-weight:500; }
+        .emp-sub  { font-size:.74rem; color:var(--muted); margin-top:.1rem; }
+        .dept-tag { display:inline-block; background:rgba(106,175,218,.1); border:1px solid rgba(106,175,218,.18); color:#7ec5e8; border-radius:6px; padding:.2em .65em; font-size:.75rem; }
+        .actions-cell { display:flex; gap:.4rem; justify-content:flex-end; }
+        .btn-icon { width:32px; height:32px; border-radius:8px; border:1px solid var(--border); background:transparent; display:flex; align-items:center; justify-content:center; color:var(--muted); cursor:pointer; text-decoration:none; font-size:.85rem; transition:all var(--tr); }
+        .btn-icon.view:hover { border-color:rgba(95,184,138,.4); color:#6fcca0; background:rgba(95,184,138,.07); }
+        .btn-icon.edit:hover { border-color:rgba(200,169,110,.4); color:var(--gold); background:var(--gold-ghost); }
+        .btn-icon.del:hover  { border-color:rgba(224,95,95,.4); color:#e07070; background:rgba(224,95,95,.07); }
+        .empty-state { text-align:center; padding:3rem 1rem; color:var(--muted); }
+        .empty-state i { font-size:2rem; display:block; margin-bottom:.75rem; }
+        @media (max-width:600px) { .page{padding:1.5rem 1rem;} thead th:nth-child(3),tbody td:nth-child(3){display:none;} }
+    </style>
+</head>
+<body>
+
+<nav class="topbar">
+    <a class="topbar-brand" th:href="@{/dashboard}">
+        <div class="monogram">RH</div>
+        <span>Espace RH</span>
+    </a>
+    <div class="topbar-right">
+        <div class="user-info">
+            <i class="bi bi-person-circle"></i>
+            <strong sec:authentication="name">Utilisateur</strong>
+            <span sec:authorize="hasRole('ADMIN')" class="badge badge-admin">Admin</span>
+            <span sec:authorize="hasRole('EMPLOYE')" class="badge badge-emp">Employé</span>
+        </div>
+        <form th:action="@{/logout}" method="post" style="margin:0">
+            <button type="submit" class="btn-logout"><i class="bi bi-box-arrow-right"></i> Déconnexion</button>
+        </form>
+    </div>
+</nav>
+
+<div th:if="${successMessage}" class="flash success">
+    <i class="bi bi-check-circle-fill"></i><span th:text="${successMessage}"></span>
+</div>
+<div th:if="${errorMessage}" class="flash error">
+    <i class="bi bi-exclamation-triangle-fill"></i><span th:text="${errorMessage}"></span>
+</div>
+
+<main class="page">
+    <div class="page-header">
+        <div class="page-header-left">
+            <p class="breadcrumb"><a th:href="@{/dashboard}">Dashboard</a> / Employés</p>
+            <h1>Gestion des <span>Employés</span></h1>
+        </div>
+        <a th:href="@{/employers/add}" class="btn-new" sec:authorize="hasRole('ADMIN')">
+            <i class="bi bi-plus-lg"></i> Nouvel employé
+        </a>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher un employé...">
+        </div>
+        <span class="count-label" id="countLabel"></span>
+    </div>
+
+    <div class="table-card">
+        <table id="empTable">
+            <thead>
+                <tr>
+                    <th>Matricule</th>
+                    <th>Employé</th>
+                    <th>Département</th>
+                    <th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="e : ${employers}" class="emp-row">
+                    <td><span class="matricule-chip" th:text="${e.matricule}">—</span></td>
+                    <td>
+                        <div class="employee-cell">
+                            <div class="avatar">
+                                <span th:if="${e.nom != null and !e.nom.isEmpty()}" th:text="${e.nom.substring(0,1)}">?</span>
+                                <span th:unless="${e.nom != null and !e.nom.isEmpty()}">?</span>
+                            </div>
+                            <div>
+                                <div class="emp-name" th:text="${e.prenom + ' ' + e.nom}">Nom</div>
+                                <div class="emp-sub" th:text="${e.fonction ?: 'Fonction non renseignée'}">—</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="dept-tag" th:text="${e.departement.nom}">Département</span>
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <a th:href="@{/employers/view(id=${e.id})}" class="btn-icon view" title="Consulter">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/employers/edit(id=${e.id})}" class="btn-icon edit" title="Modifier" sec:authorize="hasRole('ADMIN')">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button type="button" class="btn-icon del delete-btn" title="Supprimer"
+                                    sec:authorize="hasRole('ADMIN')"
+                                    th:attr="data-id=${e.id},data-nom=${e.prenom + ' ' + e.nom}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${employers == null or employers.isEmpty()}" id="emptyRow">
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>Aucun employé trouvé</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id  = this.getAttribute('data-id');
+        const nom = this.getAttribute('data-nom');
+        if (confirm('Supprimer l\'employé « ' + nom + ' » ? Cette action est irréversible.')) {
+            window.location.href = '/employers/delete?id=' + id;
+        }
+    });
+});
+
+// Live search
+const searchInput = document.getElementById('searchInput');
+const rows = document.querySelectorAll('.emp-row');
+const countLabel = document.getElementById('countLabel');
+
+function updateCount(visible) {
+    countLabel.textContent = visible + ' employé' + (visible > 1 ? 's' : '');
+}
+updateCount(rows.length);
+
+searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    let visible = 0;
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const show = text.includes(q);
+        row.style.display = show ? '' : 'none';
+        if (show) visible++;
+    });
+    updateCount(visible);
+});
+</script>
+
+</body>
+</html>

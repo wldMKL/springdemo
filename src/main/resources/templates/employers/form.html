@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${employer.id != null} ? 'Modifier Employé' : 'Nouvel Employé'">Employé — RH</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root { --bg:#0f0f10;--surface:#18181b;--surface-2:#1f1f23;--border:rgba(255,255,255,.07);--gold:#c8a96e;--gold-dim:#9c7d4d;--gold-ghost:rgba(200,169,110,.08);--text:#f0ede8;--muted:#7a7470;--muted-2:#4a4643;--warning:#e0a85f;--radius:14px;--tr:260ms cubic-bezier(.4,0,.2,1); }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        body { min-height:100vh; background-color:var(--bg); background-image:radial-gradient(ellipse 70% 50% at 20% 0%,rgba(200,169,110,.07) 0%,transparent 55%); font-family:'DM Sans',sans-serif; color:var(--text); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 1rem; }
+        .back-link { width:100%; max-width:560px; display:inline-flex; align-items:center; gap:.4rem; font-size:.78rem; color:var(--muted); text-decoration:none; margin-bottom:1.25rem; transition:color var(--tr); }
+        .back-link:hover { color:var(--gold); }
+        .card { width:100%; max-width:560px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:0 32px 64px rgba(0,0,0,.5),0 0 0 1px rgba(200,169,110,.05); animation:rise .5s cubic-bezier(.4,0,.2,1) both; }
+        @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .card-header { position:relative; background:#111012; padding:1.75rem 2rem; display:flex; align-items:center; gap:1rem; border-bottom:1px solid var(--border); overflow:hidden; }
+        .card-header::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 100% 120% at 50% 120%,rgba(200,169,110,.1) 0%,transparent 65%); pointer-events:none; }
+        .header-icon { position:relative; z-index:1; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; color:#111; flex-shrink:0; box-shadow:0 4px 14px rgba(200,169,110,.25); }
+        .header-icon.new-mode { background:linear-gradient(135deg,var(--gold),var(--gold-dim)); }
+        .header-icon.edit-mode { background:linear-gradient(135deg,var(--warning),#b8823a); }
+        .header-text { position:relative; z-index:1; }
+        .header-text h2 { font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:400; letter-spacing:.02em; }
+        .header-text h2 span { color:var(--gold); }
+        .header-text p { font-size:.78rem; color:var(--muted); margin-top:.2rem; }
+        .progress-bar-wrap { height:2px; background:var(--border); }
+        .progress-bar-fill { height:100%; width:0%; background:linear-gradient(to right,var(--gold-dim),var(--gold)); transition:width .4s cubic-bezier(.4,0,.2,1); }
+        .card-body { padding:2rem; }
+        .alert { padding:.85rem 1rem; border-radius:8px; margin-bottom:1.5rem; display:flex; align-items:center; gap:.6rem; font-size:.82rem; background:rgba(224,95,95,.1); border:1px solid rgba(224,95,95,.25); color:#e07070; }
+        .section-label { font-size:.68rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--border); }
+        .field { margin-bottom:1.3rem; }
+        .field label { display:flex; align-items:center; gap:.4rem; font-size:.72rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:.5rem; }
+        .field label .req { width:5px; height:5px; border-radius:50%; background:var(--gold-dim); flex-shrink:0; }
+        .field-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .input-wrap { position:relative; }
+        .input-wrap .icon { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.95rem; pointer-events:none; transition:color var(--tr); }
+        .input-wrap input,.input-wrap select { width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:9px; padding:.78rem .9rem .78rem 2.4rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; transition:border-color var(--tr),background var(--tr),box-shadow var(--tr); }
+        .input-wrap select { cursor:pointer; }
+        .input-wrap select option { background:var(--surface-2); }
+        .input-wrap input::placeholder { color:var(--muted-2); }
+        .input-wrap input:focus,.input-wrap select:focus { border-color:var(--gold-dim); background:rgba(255,255,255,.06); box-shadow:0 0 0 3px rgba(200,169,110,.08); }
+        .input-wrap:focus-within .icon { color:var(--gold); }
+        .input-wrap input[readonly] { opacity:.55; cursor:not-allowed; background:rgba(255,255,255,.02); }
+        .divider { height:1px; background:var(--border); margin:1.5rem 0; }
+        .actions { display:flex; flex-direction:column; gap:.65rem; }
+        .btn-save { width:100%; padding:.85rem; background:linear-gradient(135deg,var(--gold),var(--gold-dim)); border:none; border-radius:9px; color:#111; font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:500; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.5rem; transition:opacity var(--tr),transform var(--tr),box-shadow var(--tr); }
+        .btn-save:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 8px 22px rgba(200,169,110,.3); }
+        .btn-cancel { width:100%; padding:.78rem; background:transparent; border:1px solid var(--border); border-radius:9px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.5rem; text-decoration:none; transition:border-color var(--tr),color var(--tr),background var(--tr); }
+        .btn-cancel:hover { border-color:rgba(200,169,110,.3); color:var(--gold); background:var(--gold-ghost); }
+        .card-footer { padding:.85rem 2rem; background:var(--surface-2); border-top:1px solid var(--border); text-align:center; font-size:.72rem; color:var(--muted-2); }
+        .card-footer span { color:rgba(200,169,110,.45); }
+        @media (max-width:540px) { .field-row{grid-template-columns:1fr;} .card-body{padding:1.5rem;} }
+    </style>
+</head>
+<body>
+
+    <a th:href="@{/employers}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Retour à la liste
+    </a>
+
+    <div class="card">
+        <div class="card-header">
+            <div th:classappend="${employer.id != null} ? 'edit-mode' : 'new-mode'" class="header-icon">
+                <i th:class="${employer.id != null} ? 'bi bi-pencil-square' : 'bi bi-person-plus'"></i>
+            </div>
+            <div class="header-text">
+                <h2 th:text="${employer.id != null} ? 'Modifier l\'Employé' : 'Nouvel Employé'">Employé</h2>
+                <p>Renseignez les informations du collaborateur.</p>
+            </div>
+        </div>
+
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+
+        <div class="card-body">
+            <div th:if="${errorMessage}" class="alert">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <!-- For new employer: /employers/save, for edit: /employers/update -->
+            <form th:action="${employer.id != null} ? @{/employers/update} : @{/employers/save}"
+                  th:object="${employer}" method="post" id="employerForm" novalidate>
+
+                <!-- Hidden ID for update -->
+                <input type="hidden" th:field="*{id}" th:if="${employer.id != null}">
+
+                <p class="section-label">Identité</p>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label><span class="req"></span> Matricule</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-hash icon"></i>
+                            <input type="text" th:field="*{matricule}" placeholder="ex : EMP001" required minlength="3">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label><span class="req"></span> Prénom</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-person icon"></i>
+                            <input type="text" th:field="*{prenom}" placeholder="ex : Jean" required minlength="2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label><span class="req"></span> Nom de famille</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-person icon"></i>
+                        <input type="text" th:field="*{nom}" placeholder="ex : Dupont" required minlength="2">
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <p class="section-label">Coordonnées</p>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Email</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-envelope icon"></i>
+                            <input type="email" th:field="*{email}" placeholder="jean.dupont@corp.tn">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Téléphone</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-telephone icon"></i>
+                            <input type="tel" th:field="*{telephone}" placeholder="12345678" pattern="[0-9]{8}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <p class="section-label">Poste & Salaire</p>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Fonction</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-briefcase icon"></i>
+                            <input type="text" th:field="*{fonction}" placeholder="ex : Développeur">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Salaire (TND)</label>
+                        <div class="input-wrap">
+                            <i class="bi bi-cash-coin icon"></i>
+                            <input type="number" th:field="*{salaire}" placeholder="1500.00" step="0.01" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label><span class="req"></span> Département</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-diagram-3 icon"></i>
+                        <select name="departementId" required>
+                            <option value="">— Sélectionnez un département —</option>
+                            <option th:each="dept : ${departements}"
+                                    th:value="${dept.id}"
+                                    th:text="${dept.nom}"
+                                    th:selected="${employer.departement != null and employer.departement.id == dept.id}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="actions">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-floppy"></i>
+                        <span th:text="${employer.id != null} ? 'Enregistrer les modifications' : 'Ajouter l\'employé'">Enregistrer</span>
+                    </button>
+                    <a th:href="@{/employers}" class="btn-cancel">
+                        <i class="bi bi-x-lg"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <span>Espace RH</span> &nbsp;·&nbsp; Spring Boot Demo &copy; 2026
+        </div>
+    </div>
+
+<script>
+    const requiredFields = document.querySelectorAll('#employerForm input[required], #employerForm select[required]');
+    const bar = document.getElementById('progressBar');
+    function updateProgress() {
+        const filled = [...requiredFields].filter(f => f.value.trim() !== '').length;
+        bar.style.width = (filled / requiredFields.length * 100) + '%';
+    }
+    requiredFields.forEach(f => f.addEventListener('input', updateProgress));
+    requiredFields.forEach(f => f.addEventListener('change', updateProgress));
+    updateProgress();
+</script>
+
+</body>
+</html>
