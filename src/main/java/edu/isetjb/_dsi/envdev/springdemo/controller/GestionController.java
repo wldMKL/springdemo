@@ -9,7 +9,8 @@ import edu.isetjb._dsi.envdev.springdemo.model.*;
 import edu.isetjb._dsi.envdev.springdemo.service.*;
 
 /**
- * Contrôleur principal pour la gestion de l'entreprise, des départements et des employés
+ * Contrôleur principal pour la gestion de l'entreprise, des départements et des
+ * employés
  */
 @Controller
 public class GestionController {
@@ -19,11 +20,20 @@ public class GestionController {
     private final EmployerService employerService;
 
     public GestionController(EntrepriseService entrepriseService,
-                            DepartementService departementService,
-                            EmployerService employerService) {
+            DepartementService departementService,
+            EmployerService employerService) {
         this.entrepriseService = entrepriseService;
         this.departementService = departementService;
         this.employerService = employerService;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // REDIRECTION RACINE → DASHBOARD
+    // ══════════════════════════════════════════════════════════════
+
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/dashboard";
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -55,11 +65,11 @@ public class GestionController {
 
     @PostMapping("/entreprise/save")
     public String saveEntreprise(@ModelAttribute Entreprise entreprise,
-                                 RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             entrepriseService.updateEntreprise(entreprise);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Informations de l'entreprise mises à jour avec succès.");
+                    "Informations de l'entreprise mises à jour avec succès.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/entreprise/edit";
@@ -85,15 +95,13 @@ public class GestionController {
 
     @GetMapping("/departements/edit")
     public String editerDepartement(@RequestParam Long id,
-                                    // ✅ FIX 1 : RedirectAttributes au lieu de Model pour survivre au redirect
-                                    RedirectAttributes redirectAttributes,
-                                    Model model) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
         try {
             Departement departement = departementService.findByIdOrThrow(id);
             model.addAttribute("departement", departement);
             return "departements/form";
         } catch (RuntimeException e) {
-            // ✅ FIX 1 : addFlashAttribute → le message sera visible après le redirect
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/departements";
         }
@@ -101,15 +109,13 @@ public class GestionController {
 
     @PostMapping("/departements/save")
     public String sauvegarderDepartement(@ModelAttribute Departement departement,
-                                         RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             departementService.save(departement);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Département « " + departement.getNom() + " » enregistré avec succès.");
+                    "Département « " + departement.getNom() + " » enregistré avec succès.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-
-            // ✅ FIX 2 : Si c'est une modification (id présent), rediriger vers /edit, sinon /add
             if (departement.getId() != null) {
                 return "redirect:/departements/edit?id=" + departement.getId();
             }
@@ -120,16 +126,16 @@ public class GestionController {
 
     @GetMapping("/departements/delete")
     public String supprimerDepartement(@RequestParam Long id,
-                                       RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             departementService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Département supprimé avec succès.");
+                    "Département supprimé avec succès.");
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage",
-                "Erreur lors de la suppression du département.");
+                    "Erreur lors de la suppression : " + e.getMessage());
         }
         return "redirect:/departements";
     }
@@ -154,16 +160,14 @@ public class GestionController {
 
     @GetMapping("/employers/edit")
     public String editerEmployer(@RequestParam Long id,
-                                 // ✅ FIX 3 : RedirectAttributes au lieu de Model pour survivre au redirect
-                                 RedirectAttributes redirectAttributes,
-                                 Model model) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
         try {
             Employer employer = employerService.findByIdOrThrow(id);
             model.addAttribute("employer", employer);
             model.addAttribute("departements", departementService.findAll());
             return "employers/form";
         } catch (RuntimeException e) {
-            // ✅ FIX 3 : addFlashAttribute → le message sera visible après le redirect
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/employers";
         }
@@ -171,13 +175,19 @@ public class GestionController {
 
     @PostMapping("/employers/save")
     public String sauvegarderEmployer(@ModelAttribute Employer employer,
-                                      @RequestParam Long departementId,
-                                      RedirectAttributes redirectAttributes) {
+            @RequestParam(required = false) Long departementId,
+            RedirectAttributes redirectAttributes) {
+        // ✅ Vérification que departementId n'est pas null avant traitement
+        if (departementId == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Veuillez sélectionner un département.");
+            redirectAttributes.addFlashAttribute("departements", departementService.findAll());
+            return "redirect:/employers/add";
+        }
         try {
             employerService.save(employer, departementId);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » enregistré avec succès.");
-        } catch (IllegalArgumentException | RuntimeException e) {
+                    "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » enregistré avec succès.");
+        } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/employers/add";
         }
@@ -186,34 +196,40 @@ public class GestionController {
 
     @PostMapping("/employers/update")
     public String mettreAJourEmployer(@ModelAttribute Employer employer,
-                                      @RequestParam Long departementId,
-                                      RedirectAttributes redirectAttributes) {
+            @RequestParam(required = false) Long departementId,
+            RedirectAttributes redirectAttributes) {
+        // ✅ Vérification null sur l'ID de l'employé
+        if (employer.getId() == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "ID de l'employé manquant.");
+            return "redirect:/employers";
+        }
+
+        // ✅ Vérification que departementId n'est pas null
+        if (departementId == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Veuillez sélectionner un département.");
+            return "redirect:/employers/edit?id=" + employer.getId();
+        }
+
         try {
             employerService.update(employer.getId(), employer, departementId);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » mis à jour avec succès.");
-        } catch (IllegalArgumentException | RuntimeException e) {
+                    "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » mis à jour avec succès.");
+        } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-
-            // ✅ FIX 4 : Vérification null avant d'utiliser employer.getId() pour éviter le NPE
-            if (employer.getId() != null) {
-                return "redirect:/employers/edit?id=" + employer.getId();
-            }
-            return "redirect:/employers";
+            return "redirect:/employers/edit?id=" + employer.getId();
         }
         return "redirect:/employers";
     }
 
     @GetMapping("/employers/delete")
     public String supprimerEmployer(@RequestParam Long id,
-                                    RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             Employer employer = employerService.findByIdOrThrow(id);
             String nom = employer.getPrenom() + " " + employer.getNom();
-
             employerService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage",
-                "Employé « " + nom + " » supprimé avec succès.");
+                    "Employé « " + nom + " » supprimé avec succès.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
@@ -222,14 +238,13 @@ public class GestionController {
 
     @GetMapping("/employers/view")
     public String voirEmployer(@RequestParam Long id,
-                               RedirectAttributes redirectAttributes,
-                               Model model) {
+            RedirectAttributes redirectAttributes,
+            Model model) {
         try {
             Employer employer = employerService.findByIdOrThrow(id);
             model.addAttribute("employer", employer);
             return "employers/view";
         } catch (RuntimeException e) {
-            // ✅ Cohérence : même pattern que les autres méthodes avec redirect
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/employers";
         }

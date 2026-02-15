@@ -3,6 +3,9 @@ package edu.isetjb._dsi.envdev.springdemo.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "ENTREPRISE")
+@Table(name = "entreprise")
 public class Entreprise {
 
     @Id
@@ -27,7 +30,7 @@ public class Entreprise {
     @Column
     private String adresse;
 
-    @Pattern(regexp = "^[0-9]{8}$", message = "Le téléphone doit contenir exactement 8 chiffres")
+    @Pattern(regexp = "^[0-9]{8}$|^$", message = "Le téléphone doit contenir exactement 8 chiffres")
     @Column
     private String telephone;
 
@@ -35,12 +38,16 @@ public class Entreprise {
     @Column
     private String email;
 
-    // Une entreprise possède plusieurs départements
+    // ✅ @ToString.Exclude et @EqualsAndHashCode.Exclude pour éviter les boucles infinies Lombok
     @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Departement> departements = new ArrayList<>();
 
-    // Une entreprise possède plusieurs employés
-    @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)
+    // ✅ Pas de CascadeType.ALL ici — on gère les employés indépendamment
+    @OneToMany(mappedBy = "entreprise", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Employer> employers = new ArrayList<>();
 
     // Constructeurs
