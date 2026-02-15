@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${employe.matricule == 0 ? 'Nouvel Employé — RH' : 'Modifier Employé — RH'}">Gestion RH</title>
+    <title>Nouvel Employé — RH</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -208,18 +208,6 @@
             box-shadow: 0 0 0 3px rgba(200,169,110,.08);
         }
 
-        /* Style spécifique pour le mode Read-Only (Modification) */
-        .input-wrap input:read-only {
-            background: rgba(0,0,0,.2);
-            border-color: rgba(255,255,255,.03);
-            color: var(--muted);
-            cursor: not-allowed;
-        }
-        .input-wrap input:read-only:focus {
-            box-shadow: none;
-            border-color: var(--danger); /* Petit feedback visuel si on essaie de cliquer */
-        }
-
         .input-wrap input:focus ~ .icon { color: var(--gold); }
         .input-wrap:focus-within .icon  { color: var(--gold); }
 
@@ -322,6 +310,23 @@
 
         .card-footer span { color: rgba(200,169,110,.5); }
 
+        /* ── Alert ───────────────────────────────────────────── */
+        .alert {
+            padding: .85rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .82rem;
+        }
+
+        .alert-danger {
+            background: rgba(224,95,95,.1);
+            border: 1px solid rgba(224,95,95,.25);
+            color: #e07070;
+        }
+
         /* ── Responsive ──────────────────────────────────────── */
         @media (max-width: 540px) {
             .back-link { margin-left: 0; }
@@ -339,14 +344,11 @@
 
         <div class="card-header">
             <div class="header-icon">
-                <i class="bi" th:classappend="${employe.matricule == 0 ? 'bi-person-plus' : 'bi-pencil'}"></i>
+                <i class="bi bi-person-plus"></i>
             </div>
             <div class="header-text">
-                <h2>
-                    <span th:text="${employe.matricule == 0 ? 'Nouvel' : 'Modifier'}">Nouvel</span> 
-                    <span style="color:var(--gold)">Employé</span>
-                </h2>
-                <p th:text="${employe.matricule == 0 ? 'Renseignez les informations du collaborateur.' : 'Mise à jour des données existantes.'}"></p>
+                <h2>Nouvel <span style="color:var(--gold)">Employé</span></h2>
+                <p>Renseignez les informations du collaborateur.</p>
             </div>
         </div>
 
@@ -357,8 +359,9 @@
         <div class="card-body">
             <form th:action="@{/save}" th:object="${employe}" method="post" id="employeForm" novalidate>
 
-                <div th:if="${errorMessage}" class="alert alert-danger" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 1rem;">
-                    <i class="bi bi-exclamation-triangle"></i> <span th:text="${errorMessage}"></span>
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span th:text="${errorMessage}"></span>
                 </div>
 
                 <div class="field">
@@ -374,16 +377,11 @@
                             th:field="*{matricule}"
                             placeholder="ex : 1001"
                             min="1"
-                            required
-                            th:readonly="${employe.matricule != 0}">
+                            required>
                     </div>
-                    <p class="field-hint" th:if="${employe.matricule == 0}">
+                    <p class="field-hint">
                         <i class="bi bi-info-circle"></i>
                         Le matricule doit être unique et supérieur à 0.
-                    </p>
-                    <p class="field-hint" th:if="${employe.matricule != 0}" style="color: var(--muted-2)">
-                        <i class="bi bi-lock-fill"></i>
-                        Le matricule ne peut pas être modifié.
                     </p>
                 </div>
 
@@ -409,7 +407,7 @@
                 <div class="actions">
                     <button type="submit" class="btn-save">
                         <i class="bi bi-floppy"></i>
-                        <span th:text="${employe.matricule == 0 ? 'Enregistrer l\'employé' : 'Mettre à jour'}">Enregistrer</span>
+                        <span>Enregistrer l'employé</span>
                     </button>
                     <a th:href="@{/index}" class="btn-cancel">
                         <i class="bi bi-x-lg"></i>
@@ -431,14 +429,11 @@
         const bar      = document.getElementById('progressBar');
 
         function updateProgress() {
-            // On compte les champs remplis
             const filled = [...fields].filter(f => f.value.trim() !== '').length;
-            // Calcul du pourcentage
             bar.style.width = (filled / fields.length * 100) + '%';
         }
 
         fields.forEach(f => f.addEventListener('input', updateProgress));
-        // Appel initial pour que la barre se remplisse si on est en mode "Edit" (champs déjà remplis)
         updateProgress();
     </script>
 

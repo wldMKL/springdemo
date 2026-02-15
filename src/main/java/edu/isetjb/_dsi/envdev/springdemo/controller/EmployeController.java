@@ -65,9 +65,9 @@ public class EmployeController {
     }
 
     // ── Formulaire modification ───────────────────────────────────────────────
-    // ✅ Pas de lambda — if/else classique, pas de problème d'injection
+    // ✅ CORRECTION : Integer au lieu de Long pour correspondre au type du matricule
     @GetMapping("/edit")
-    public String formulaireModification(@RequestParam("id") Long id,
+    public String formulaireModification(@RequestParam("id") Integer id,
                                          Model model) {
         Optional<Employe> optional = employeRepository.findById(id);
 
@@ -75,23 +75,24 @@ public class EmployeController {
             model.addAttribute("employe", optional.get());
             return "edit-employe";
         } else {
-            model.addAttribute("errorMessage", "Employé introuvable (id=" + id + ").");
+            model.addAttribute("errorMessage", "Employé introuvable (matricule=" + id + ").");
             model.addAttribute("listEmployes", employeRepository.findAll());
             return "list-employes";
         }
     }
 
     // ── Mise à jour ───────────────────────────────────────────────────────────
+    // ✅ CORRECTION : getMatricule() au lieu de getId() car l'entité n'a pas de champ id
     @PostMapping("/update")
     public String mettreAJourEmploye(@ModelAttribute Employe employe,
                                      RedirectAttributes redirectAttributes) {
-        if (employe.getId() == null) {
+        if (employe.getMatricule() == 0) {
             redirectAttributes.addFlashAttribute("errorMessage", "Employé invalide.");
             return "redirect:/index";
         }
         if (employe.getNom() == null || employe.getNom().isBlank()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Le nom ne peut pas être vide.");
-            return "redirect:/edit?id=" + employe.getId();
+            return "redirect:/edit?id=" + employe.getMatricule();
         }
         employeRepository.save(employe);
         redirectAttributes.addFlashAttribute("successMessage",
@@ -100,9 +101,9 @@ public class EmployeController {
     }
 
     // ── Suppression ───────────────────────────────────────────────────────────
-    // ✅ if/else classique — RedirectAttributes fonctionne correctement
+    // ✅ CORRECTION : Integer au lieu de Long
     @GetMapping("/delete")
-    public String supprimerEmploye(@RequestParam("id") Long id,
+    public String supprimerEmploye(@RequestParam("id") Integer id,
                                    RedirectAttributes redirectAttributes) {
         Optional<Employe> optional = employeRepository.findById(id);
 
@@ -113,7 +114,7 @@ public class EmployeController {
                     "L'employé « " + nom + " » a été supprimé avec succès.");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage",
-                    "Employé introuvable (id=" + id + ").");
+                    "Employé introuvable (matricule=" + id + ").");
         }
 
         return "redirect:/index";
