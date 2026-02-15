@@ -6,21 +6,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.isetjb._dsi.envdev.springdemo.model.*;
-import edu.isetjb._dsi.envdev.springdemo.repository.*;
+import edu.isetjb._dsi.envdev.springdemo.service.*;
 
+/**
+ * Contrôleur principal pour la gestion de l'entreprise, des départements et des employés
+ */
 @Controller
 public class GestionController {
 
-    private final EntrepriseRepository entrepriseRepository;
-    private final DepartementRepository departementRepository;
-    private final EmployerRepository employerRepository;
+    private final EntrepriseService entrepriseService;
+    private final DepartementService departementService;
+    private final EmployerService employerService;
 
-    public GestionController(EntrepriseRepository entrepriseRepository,
-                            DepartementRepository departementRepository,
-                            EmployerRepository employerRepository) {
-        this.entrepriseRepository = entrepriseRepository;
-        this.departementRepository = departementRepository;
-        this.employerRepository = employerRepository;
+    public GestionController(EntrepriseService entrepriseService,
+                            DepartementService departementService,
+                            EmployerService employerService) {
+        this.entrepriseService = entrepriseService;
+        this.departementService = departementService;
+        this.employerService = employerService;
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -29,14 +32,12 @@ public class GestionController {
     
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // Récupérer l'entreprise (toujours la première, ID = 1)
-        Entreprise entreprise = entrepriseRepository.findById(1L)
-                .orElse(new Entreprise("Mon Entreprise", "", "", ""));
+        Entreprise entreprise = entrepriseService.getEntreprisePrincipale();
         
         model.addAttribute("entreprise", entreprise);
-        model.addAttribute("nbDepartements", departementRepository.count());
-        model.addAttribute("nbEmployers", employerRepository.count());
-        model.addAttribute("departements", departementRepository.findAll());
+        model.addAttribute("nbDepartements", departementService.count());
+        model.addAttribute("nbEmployers", employerService.count());
+        model.addAttribute("departements", departementService.findAll());
         
         return "dashboard";
     }
@@ -47,8 +48,7 @@ public class GestionController {
     
     @GetMapping("/entreprise/edit")
     public String editEntreprise(Model model) {
-        Entreprise entreprise = entrepriseRepository.findById(1L)
-                .orElse(new Entreprise());
+        Entreprise entreprise = entrepriseService.getEntreprisePrincipale();
         model.addAttribute("entreprise", entreprise);
         return "entreprise/form";
     }
@@ -56,11 +56,15 @@ public class GestionController {
     @PostMapping("/entreprise/save")
     public String saveEntreprise(@ModelAttribute Entreprise entreprise,
                                  RedirectAttributes redirectAttributes) {
-        // S'assurer que c'est toujours l'ID 1
-        entreprise.setId(1L);
-        entrepriseRepository.save(entreprise);
-        redirectAttributes.addFlashAttribute("successMessage", 
-            "Informations de l'entreprise mises à jour avec succès.");
+        try {
+            entrepriseService.updateEntreprise(entreprise);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Informations de l'entreprise mises à jour avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/entreprise/edit";
+        }
+        
         return "redirect:/dashboard";
     }
 
@@ -70,7 +74,7 @@ public class GestionController {
     
     @GetMapping("/departements")
     public String listerDepartements(Model model) {
-        model.addAttribute("departements", departementRepository.findAll());
+        model.addAttribute("departements", departementService.findAll());
         return "departements/list";
     }
     
@@ -82,40 +86,43 @@ public class GestionController {
     
     @GetMapping("/departements/edit")
     public String editerDepartement(@RequestParam Long id, Model model) {
-        Departement departement = departementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Département introuvable"));
-        model.addAttribute("departement", departement);
-        return "departements/form";
+        try {
+            Departement departement = departementService.findByIdOrThrow(id);
+            model.addAttribute("departement", departement);
+            return "departements/form";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/departements";
+        }
     }
     
     @PostMapping("/departements/save")
     public String sauvegarderDepartement(@ModelAttribute Departement departement,
                                         RedirectAttributes redirectAttributes) {
-        // Toujours lier à l'entreprise principale (ID = 1)
-        Entreprise entreprise = entrepriseRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Entreprise introuvable"));
+        try {
+            departementService.save(departement);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Département « " + departement.getNom() + " » enregistré avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/departements/add";
+        }
         
-        departement.setEntreprise(entreprise);
-        departementRepository.save(departement);
-        
-        redirectAttributes.addFlashAttribute("successMessage", 
-            "Département « " + departement.getNom() + " » enregistré avec succès.");
         return "redirect:/departements";
     }
     
     @GetMapping("/departements/delete")
     public String supprimerDepartement(@RequestParam Long id,
                                       RedirectAttributes redirectAttributes) {
-        // Vérifier qu'il n'y a pas d'employés dans ce département
-        long nbEmployes = employerRepository.findByDepartementId(id).size();
-        
-        if (nbEmployes > 0) {
-            redirectAttributes.addFlashAttribute("errorMessage", 
-                "Impossible de supprimer ce département : " + nbEmployes + " employé(s) y sont affecté(s).");
-        } else {
-            departementRepository.deleteById(id);
+        try {
+            departementService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", 
                 "Département supprimé avec succès.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", 
+                "Erreur lors de la suppression du département.");
         }
         
         return "redirect:/departements";
@@ -127,71 +134,89 @@ public class GestionController {
     
     @GetMapping("/employers")
     public String listerEmployers(Model model) {
-        model.addAttribute("employers", employerRepository.findAll());
-        model.addAttribute("departements", departementRepository.findAll());
+        model.addAttribute("employers", employerService.findAll());
+        model.addAttribute("departements", departementService.findAll());
         return "employers/list";
     }
     
     @GetMapping("/employers/add")
     public String ajouterEmployer(Model model) {
         model.addAttribute("employer", new Employer());
-        model.addAttribute("departements", departementRepository.findAll());
+        model.addAttribute("departements", departementService.findAll());
         return "employers/form";
     }
     
     @GetMapping("/employers/edit")
     public String editerEmployer(@RequestParam Long id, Model model) {
-        Employer employer = employerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employé introuvable"));
-        model.addAttribute("employer", employer);
-        model.addAttribute("departements", departementRepository.findAll());
-        return "employers/form";
+        try {
+            Employer employer = employerService.findByIdOrThrow(id);
+            model.addAttribute("employer", employer);
+            model.addAttribute("departements", departementService.findAll());
+            return "employers/form";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/employers";
+        }
     }
     
     @PostMapping("/employers/save")
     public String sauvegarderEmployer(@ModelAttribute Employer employer,
                                       @RequestParam Long departementId,
                                       RedirectAttributes redirectAttributes) {
-        // Toujours lier à l'entreprise principale (ID = 1)
-        Entreprise entreprise = entrepriseRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Entreprise introuvable"));
+        try {
+            employerService.save(employer, departementId);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » enregistré avec succès.");
+        } catch (IllegalArgumentException | RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/employers/add";
+        }
         
-        Departement departement = departementRepository.findById(departementId)
-                .orElseThrow(() -> new RuntimeException("Département introuvable"));
+        return "redirect:/employers";
+    }
+    
+    @PostMapping("/employers/update")
+    public String mettreAJourEmployer(@ModelAttribute Employer employer,
+                                      @RequestParam Long departementId,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            employerService.update(employer.getId(), employer, departementId);
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » mis à jour avec succès.");
+        } catch (IllegalArgumentException | RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/employers/edit?id=" + employer.getId();
+        }
         
-        employer.setEntreprise(entreprise);
-        employer.setDepartement(departement);
-        employerRepository.save(employer);
-        
-        redirectAttributes.addFlashAttribute("successMessage", 
-            "Employé « " + employer.getPrenom() + " " + employer.getNom() + " » enregistré avec succès.");
         return "redirect:/employers";
     }
     
     @GetMapping("/employers/delete")
     public String supprimerEmployer(@RequestParam Long id,
                                    RedirectAttributes redirectAttributes) {
-        Employer employer = employerRepository.findById(id).orElse(null);
-        
-        if (employer != null) {
+        try {
+            Employer employer = employerService.findByIdOrThrow(id);
             String nom = employer.getPrenom() + " " + employer.getNom();
-            employerRepository.deleteById(id);
+            
+            employerService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", 
                 "Employé « " + nom + " » supprimé avec succès.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", 
-                "Employé introuvable.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         
         return "redirect:/employers";
     }
     
-    // Voir les détails d'un employé
     @GetMapping("/employers/view")
     public String voirEmployer(@RequestParam Long id, Model model) {
-        Employer employer = employerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employé introuvable"));
-        model.addAttribute("employer", employer);
-        return "employers/view";
+        try {
+            Employer employer = employerService.findByIdOrThrow(id);
+            model.addAttribute("employer", employer);
+            return "employers/view";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "redirect:/employers";
+        }
     }
 }

@@ -11,6 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuration de la sécurité Spring Security
+ * - Authentification en mémoire avec 2 utilisateurs (admin et employe)
+ * - Autorisation basée sur les rôles (ADMIN, EMPLOYE)
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -41,25 +46,32 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
+                // Ressources publiques
                 .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
 
-                // ✅ CORRECTION : Couvre toutes les URLs d'administration du nouveau système
+                // URLs d'administration (modification/suppression)
                 .requestMatchers(
-                    "/add", "/save", "/edit", "/update", "/delete",
+                    "/entreprise/**",
                     "/departements/add", "/departements/save",
                     "/departements/edit", "/departements/delete",
                     "/employers/add", "/employers/save",
-                    "/employers/edit", "/employers/delete",
-                    "/entreprise/edit", "/entreprise/save"
+                    "/employers/edit", "/employers/update", "/employers/delete"
                 ).hasRole("ADMIN")
 
+                // URLs accessibles à tous les authentifiés (consultation)
+                .requestMatchers(
+                    "/dashboard",
+                    "/departements",
+                    "/employers", "/employers/view"
+                ).authenticated()
+
+                // Toutes les autres requêtes nécessitent une authentification
                 .anyRequest().authenticated()
             )
             .formLogin(login -> login
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                // ✅ CORRECTION : Redirection vers /dashboard (et non /index qui est l'ancien système)
-                .defaultSuccessUrl("/dashboard", true)
+                .defaultSuccessUrl("/dashboard", true)  // ✅ Redirection cohérente vers dashboard
                 .failureUrl("/login?error")
                 .permitAll()
             )
