@@ -1,93 +1,121 @@
 package edu.isetjb._dsi.envdev.springdemo.controller;
 
-// 1. TOUS LES IMPORTS NÉCESSAIRES
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Optional;
 
 import edu.isetjb._dsi.envdev.springdemo.model.Employe;
 import edu.isetjb._dsi.envdev.springdemo.repository.EmployeRepository;
 
-import java.util.Optional;
-
 @Controller
 public class EmployeController {
 
-    @Autowired
-    private EmployeRepository employeRepository;
+    private final EmployeRepository employeRepository;
 
-    // ── 1. Page de Connexion ───────────────────────────────────────────
-    @GetMapping("/login")
-    public String pageConnexion() {
-        return "login"; // Pointe vers login.html
+    public EmployeController(EmployeRepository employeRepository) {
+        this.employeRepository = employeRepository;
     }
 
-    // ── 2. Affichage de la liste (index) ───────────────────────────────
+    // ── Connexion ─────────────────────────────────────────────────────────────
+    @GetMapping("/login")
+    public String pageConnexion(HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        return "login";
+    }
+
+    // ── Liste ─────────────────────────────────────────────────────────────────
     @GetMapping("/index")
     public String listerEmployes(Model model) {
         model.addAttribute("listEmployes", employeRepository.findAll());
-        return "list-employes"; // Pointe vers list-employes.html
+        return "list-employes";
     }
 
-    // ── 3. Formulaire d'ajout (vide) ───────────────────────────────────
+    // ── Formulaire ajout ──────────────────────────────────────────────────────
     @GetMapping("/add")
     public String formulaireAjout(Model model) {
-        // On crée un employé vide. Par défaut, un int vaut 0.
-        // Cela permet à notre HTML de savoir qu'il s'agit d'un nouvel ajout.
-        model.addAttribute("employe", new Employe());
-        return "form-employe"; // Réutilise le même formulaire pour ajout et modif
+        if (!model.containsAttribute("employe")) {
+            model.addAttribute("employe", new Employe());
+        }
+        return "form-employe";
     }
 
-    // ── 4. Enregistrement (Sauvegarde ou Mise à jour) ──────────────────
+    // ── Enregistrement ────────────────────────────────────────────────────────
     @PostMapping("/save")
-    public String enregistrerEmploye(@ModelAttribute Employe employe, RedirectAttributes redirectAttributes) {
-        // Petite validation de sécurité
-        if (employe.getNom() == null || employe.getNom().trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Le nom est obligatoire.");
-            return "redirect:/add"; // Retourne au formulaire si erreur
+    public String enregistrerEmploye(@ModelAttribute Employe employe,
+                                     RedirectAttributes redirectAttributes) {
+        if (employe.getNom() == null || employe.getNom().isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Le nom ne peut pas être vide.");
+            redirectAttributes.addFlashAttribute("employe", employe);
+            return "redirect:/add";
         }
-
-        // JPA est malin : si l'employé a un matricule existant, il fait un UPDATE.
-        // Sinon, il fait un INSERT.
         employeRepository.save(employe);
-
-        redirectAttributes.addFlashAttribute("successMessage", "Employé enregistré avec succès !");
+        redirectAttributes.addFlashAttribute("successMessage",
+                "L'employé « " + employe.getNom() + " » a été ajouté avec succès.");
         return "redirect:/index";
     }
 
-    // ── 5. Formulaire de modification (Pré-rempli) ─────────────────────
-    // Notez l'utilisation de @PathVariable pour correspondre à /edit/{id}
-    @GetMapping("/edit/{id}")
-    public String formulaireModification(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
-        // On cherche l'employé par son matricule (Integer car JPA utilise des objets)
-        Optional<Employe> employe = employeRepository.findById(id);
+    // ── Formulaire modification ───────────────────────────────────────────────
+    // ✅ Pas de lambda — if/else classique, pas de problème d'injection
+    @GetMapping("/edit")
+    public String formulaireModification(@RequestParam("id") Long id,
+                                         Model model) {
+        Optional<Employe> optional = employeRepository.findById(id);
 
-        if (employe.isPresent()) {
-            // S'il existe, on l'envoie au formulaire
-            model.addAttribute("employe", employe.get());
-            return "form-employe";
+        if (optional.isPresent()) {
+            model.addAttribute("employe", optional.get());
+            return "edit-employe";
         } else {
-            // S'il n'existe pas, on redirige avec une erreur
-            redirectAttributes.addFlashAttribute("errorMessage", "Employé introuvable.");
-            return "redirect:/index";
+            model.addAttribute("errorMessage", "Employé introuvable (id=" + id + ").");
+            model.addAttribute("listEmployes", employeRepository.findAll());
+            return "list-employes";
         }
     }
 
-    // ── 6. Suppression ─────────────────────────────────────────────────
-    @GetMapping("/delete/{id}")
-    public String supprimerEmploye(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        // On vérifie d'abord s'il existe pour éviter une erreur
-        if (employeRepository.existsById(id)) {
-            employeRepository.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Employé supprimé.");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Impossible de supprimer : Employé introuvable.");
+    // ── Mise à jour ───────────────────────────────────────────────────────────
+    @PostMapping("/update")
+    public String mettreAJourEmploye(@ModelAttribute Employe employe,
+                                     RedirectAttributes redirectAttributes) {
+        if (employe.getId() == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Employé invalide.");
+            return "redirect:/index";
         }
+        if (employe.getNom() == null || employe.getNom().isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Le nom ne peut pas être vide.");
+            return "redirect:/edit?id=" + employe.getId();
+        }
+        employeRepository.save(employe);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "L'employé « " + employe.getNom() + " » a été mis à jour avec succès.");
+        return "redirect:/index";
+    }
+
+    // ── Suppression ───────────────────────────────────────────────────────────
+    // ✅ if/else classique — RedirectAttributes fonctionne correctement
+    @GetMapping("/delete")
+    public String supprimerEmploye(@RequestParam("id") Long id,
+                                   RedirectAttributes redirectAttributes) {
+        Optional<Employe> optional = employeRepository.findById(id);
+
+        if (optional.isPresent()) {
+            String nom = optional.get().getNom();
+            employeRepository.deleteById(id);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "L'employé « " + nom + " » a été supprimé avec succès.");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Employé introuvable (id=" + id + ").");
+        }
+
         return "redirect:/index";
     }
 }
