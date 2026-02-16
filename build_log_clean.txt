@@ -1,0 +1,252 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< edu.isetjb.12dsi.envdev:springdemo >-----------------
+[INFO] Building springdemo 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ springdemo ---
+[INFO] Deleting C:\Users\dizoa\OneDrive\Bureau\Framework\exercice\TP de maison\springdemo\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ springdemo ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 10 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ springdemo ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 18 source files with javac [debug release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[67,24] cannot find symbol
+  symbol:   method getNom()
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[67,56] cannot find symbol
+  symbol:   method getNom()
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[73,20] cannot find symbol
+  symbol:   method setEntreprise(edu.isetjb._dsi.envdev.springdemo.model.Entreprise)
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[37,31] cannot find symbol
+  symbol:   method setId(long)
+  location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[47,23] cannot find symbol
+  symbol:   method getNom()
+  location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[47,54] cannot find symbol
+  symbol:   method getNom()
+  location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[52,19] cannot find symbol
+  symbol:   method setId(long)
+  location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[66,44] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[66,73] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[79,21] cannot find symbol
+  symbol:   method getId()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[87,61] cannot find symbol
+  symbol:   method getId()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[91,44] cannot find symbol
+  symbol:   method getId()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[93,44] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[93,73] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[96,61] cannot find symbol
+  symbol:   method getId()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[106,34] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[106,63] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[67,21] cannot find symbol
+  symbol:   method getMatricule()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[67,56] cannot find symbol
+  symbol:   method getMatricule()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[70,21] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[70,50] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[73,21] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[73,53] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[82,17] cannot find symbol
+  symbol:   method setEntreprise(edu.isetjb._dsi.envdev.springdemo.model.Entreprise)
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[83,17] cannot find symbol
+  symbol:   method setDepartement(edu.isetjb._dsi.envdev.springdemo.model.Departement)
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[96,39] cannot find symbol
+  symbol:   method getMatricule()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[97,33] cannot find symbol
+  symbol:   method getNom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[98,36] cannot find symbol
+  symbol:   method getPrenom()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[99,35] cannot find symbol
+  symbol:   method getEmail()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[100,39] cannot find symbol
+  symbol:   method getTelephone()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[101,38] cannot find symbol
+  symbol:   method getFonction()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[102,37] cannot find symbol
+  symbol:   method getSalaire()
+  location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[107,21] cannot find symbol
+  symbol:   method setDepartement(edu.isetjb._dsi.envdev.springdemo.model.Departement)
+  location: variable existing of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[53,51] cannot find symbol
+  symbol:   method getNom()
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[56,28] cannot find symbol
+  symbol:   method getId()
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[57,71] cannot find symbol
+  symbol:   method getId()
+  location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[INFO] 36 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  37.875 s
+[INFO] Finished at: 2026-02-15T22:22:08Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project springdemo: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[67,24] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[67,56] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/DepartementService.java:[73,20] cannot find symbol
+[ERROR]   symbol:   method setEntreprise(edu.isetjb._dsi.envdev.springdemo.model.Entreprise)
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[37,31] cannot find symbol
+[ERROR]   symbol:   method setId(long)
+[ERROR]   location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[47,23] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[47,54] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EntrepriseService.java:[52,19] cannot find symbol
+[ERROR]   symbol:   method setId(long)
+[ERROR]   location: variable entreprise of type edu.isetjb._dsi.envdev.springdemo.model.Entreprise
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[66,44] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[66,73] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[79,21] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[87,61] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[91,44] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[93,44] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[93,73] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[96,61] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[106,34] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/EmployerController.java:[106,63] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[67,21] cannot find symbol
+[ERROR]   symbol:   method getMatricule()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[67,56] cannot find symbol
+[ERROR]   symbol:   method getMatricule()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[70,21] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[70,50] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[73,21] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[73,53] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[82,17] cannot find symbol
+[ERROR]   symbol:   method setEntreprise(edu.isetjb._dsi.envdev.springdemo.model.Entreprise)
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[83,17] cannot find symbol
+[ERROR]   symbol:   method setDepartement(edu.isetjb._dsi.envdev.springdemo.model.Departement)
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[96,39] cannot find symbol
+[ERROR]   symbol:   method getMatricule()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[97,33] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[98,36] cannot find symbol
+[ERROR]   symbol:   method getPrenom()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[99,35] cannot find symbol
+[ERROR]   symbol:   method getEmail()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[100,39] cannot find symbol
+[ERROR]   symbol:   method getTelephone()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[101,38] cannot find symbol
+[ERROR]   symbol:   method getFonction()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[102,37] cannot find symbol
+[ERROR]   symbol:   method getSalaire()
+[ERROR]   location: variable employer of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/service/EmployerService.java:[107,21] cannot find symbol
+[ERROR]   symbol:   method setDepartement(edu.isetjb._dsi.envdev.springdemo.model.Departement)
+[ERROR]   location: variable existing of type edu.isetjb._dsi.envdev.springdemo.model.Employer
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[53,51] cannot find symbol
+[ERROR]   symbol:   method getNom()
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[56,28] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] /C:/Users/dizoa/OneDrive/Bureau/Framework/exercice/TP de maison/springdemo/src/main/java/edu/isetjb/_dsi/envdev/springdemo/controller/DepartementController.java:[57,71] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable departement of type edu.isetjb._dsi.envdev.springdemo.model.Departement
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

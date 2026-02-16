@@ -2,17 +2,13 @@ package edu.isetjb._dsi.envdev.springdemo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entité représentant une entreprise
  */
-@Data
 @Entity
 @Table(name = "entreprise")
 public class Entreprise {
@@ -38,16 +34,10 @@ public class Entreprise {
     @Column
     private String email;
 
-    // ✅ @ToString.Exclude et @EqualsAndHashCode.Exclude pour éviter les boucles infinies Lombok
     @OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<Departement> departements = new ArrayList<>();
 
-    // ✅ Pas de CascadeType.ALL ici — on gère les employés indépendamment
-    @OneToMany(mappedBy = "entreprise", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "entreprise", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Employer> employers = new ArrayList<>();
 
     // Constructeurs
@@ -59,5 +49,85 @@ public class Entreprise {
         this.adresse = adresse;
         this.telephone = telephone;
         this.email = email;
+    }
+
+    // Getters et Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(String adresse) {
+        this.adresse = adresse;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Departement> getDepartements() {
+        return departements;
+    }
+
+    public void setDepartements(List<Departement> departements) {
+        this.departements = departements;
+    }
+
+    public List<Employer> getEmployers() {
+        return employers;
+    }
+
+    public void setEmployers(List<Employer> employers) {
+        this.employers = employers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Entreprise that = (Entreprise) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Entreprise{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                '}';
     }
 }
